@@ -11,6 +11,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Job;
+import dao.JobDAO;
+import java.util.List;
 
 /**
  *
@@ -57,7 +60,15 @@ public class ViewJobsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            JobDAO dao = new JobDAO();
+            List<Job> jobs = dao.getAllJobs();
+            request.setAttribute("jobs", jobs);
+            request.getRequestDispatcher("job/viewJobs.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.getWriter().println("Lỗi khi lấy danh sách công việc: " + e.getMessage());
+        }
     }
 
     /**

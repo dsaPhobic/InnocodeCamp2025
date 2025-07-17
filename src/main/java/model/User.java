@@ -1,48 +1,24 @@
 package model;
 
 public class User {
-
     private int id;
     private String fullname;
     private String email;
     private String password;
     private String description;
-    private String role;
-    private String gender;
-    
+    private boolean isAdmin;
 
     public User() {
     }
 
-    public User(int id, String fullname, String email, String password, String description, String role, String gender) {
+    public User(int id, String fullname, String email, String password, String description, boolean isAdmin) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.description = description;
-        this.role = role;
-        this.gender = gender;
+        this.isAdmin = isAdmin;
     }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-   
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    
 
     // Getters
     public int getId() {
@@ -65,6 +41,10 @@ public class User {
         return description;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
     // Setters
     public void setId(int id) {
         this.id = id;
@@ -85,5 +65,8 @@ public class User {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
 }

@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import dao.JobDAO;
 
 /**
  *
@@ -71,7 +72,20 @@ public class DeleteJobServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String idStr = request.getParameter("id");
+        if (idStr != null) {
+            try {
+                int id = Integer.parseInt(idStr);
+                JobDAO dao = new JobDAO();
+                dao.deleteJob(id);
+                response.sendRedirect("ViewJobsServlet");
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.getWriter().println("Lỗi khi xoá công việc: " + e.getMessage());
+            }
+        } else {
+            response.sendRedirect("ViewJobsServlet");
+        }
     }
 
     /**

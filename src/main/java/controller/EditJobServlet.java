@@ -11,6 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Job;
+import dao.JobDAO;
 
 /**
  *
@@ -57,7 +59,21 @@ public class EditJobServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String idStr = request.getParameter("id");
+        if (idStr != null) {
+            try {
+                int id = Integer.parseInt(idStr);
+                JobDAO dao = new JobDAO();
+                Job job = dao.getJobById(id);
+                request.setAttribute("job", job);
+                request.getRequestDispatcher("job/editJob.jsp").forward(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.getWriter().println("Lỗi khi lấy thông tin công việc: " + e.getMessage());
+            }
+        } else {
+            response.sendRedirect("ViewJobsServlet");
+        }
     }
 
     /**
@@ -71,7 +87,25 @@ public class EditJobServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.setCharacterEncoding("UTF-8");
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String title = request.getParameter("title");
+            String company = request.getParameter("company");
+            String location = request.getParameter("location");
+            String environment = request.getParameter("environment");
+            String skillRequired = request.getParameter("skill_required");
+            String cultureTags = request.getParameter("culture_tags");
+            String description = request.getParameter("description");
+            String recruiterEmail = request.getParameter("recruiter_email");
+            Job job = new Job(id, title, company, location, environment, skillRequired, cultureTags, description, recruiterEmail);
+            JobDAO dao = new JobDAO();
+            dao.updateJob(job);
+            response.sendRedirect("ViewJobsServlet");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.getWriter().println("Lỗi khi cập nhật công việc: " + e.getMessage());
+        }
     }
 
     /**

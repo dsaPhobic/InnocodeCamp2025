@@ -4,14 +4,11 @@
     <title>Phân tích kỹ năng</title>
 </head>
 <body>
-<h2>🧠 Nhập mô tả hoặc upload CV</h2>
+<h2>📄 Upload CV để phân tích kỹ năng</h2>
 
 <form action="SkillAnalysisServlet" method="post" enctype="multipart/form-data">
-    <label>Mô tả kỹ năng:</label><br>
-    <textarea name="description" rows="5" cols="60"></textarea><br><br>
-
-    <label>Upload CV (.pdf, .docx):</label>
-    <input type="file" name="cvFile" accept=".pdf,.doc,.docx"><br><br>
+    <label>Chọn file CV (.pdf, .docx):</label><br>
+    <input type="file" name="cvFile" accept=".pdf,.doc,.docx" required><br><br>
 
     <input type="submit" value="Phân tích kỹ năng">
 </form>
