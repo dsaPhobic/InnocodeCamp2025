@@ -9,5 +9,5 @@ package dao;
  * @author hmqua
  */
 public class UserDAO {
-    
+
 }
