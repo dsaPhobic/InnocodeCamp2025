@@ -25,9 +25,7 @@ import service.LLMService;
 )
 public class ChatbotServlet extends HttpServlet {
 
-    private static final String SYSTEM_PROMPT
-    = "promt...";
-
+   
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -50,10 +48,7 @@ public class ChatbotServlet extends HttpServlet {
             chatMemory = new ArrayList<>();
         }
 
-        // Thêm system prompt nếu mới khởi tạo
-        if (chatMemory.isEmpty()) {
-            chatMemory.add(new ChatMessage("system", SYSTEM_PROMPT));
-        }
+       
 
         String userMessage = request.getParameter("message");
         String base64Image = null;
@@ -93,7 +88,8 @@ public class ChatbotServlet extends HttpServlet {
             }
             chatMemory.add(new ChatMessage("user", userMemoryContent));
 
-            String llmResponse = LLMService.getResponseFromChatMessages(chatMemory);
+            // Changed here: use chatHistory for LLM.getResponse to support images
+            String llmResponse = LLMService.getResponse(chatHistory);
 
             chatHistory.add(new Message("assistant", llmResponse));
             chatMemory.add(new ChatMessage("assistant", llmResponse));
