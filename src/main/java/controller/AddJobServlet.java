@@ -11,6 +11,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Job;
+import dao.JobDAO;
 
 /**
  *
@@ -71,7 +73,24 @@ public class AddJobServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.setCharacterEncoding("UTF-8");
+        String title = request.getParameter("title");
+        String company = request.getParameter("company");
+        String location = request.getParameter("location");
+        String environment = request.getParameter("environment");
+        String skillRequired = request.getParameter("skill_required");
+        String cultureTags = request.getParameter("culture_tags");
+        String description = request.getParameter("description");
+        String recruiterEmail = request.getParameter("recruiter_email");
+        Job job = new Job(0, title, company, location, environment, skillRequired, cultureTags, description, recruiterEmail);
+        try {
+            JobDAO dao = new JobDAO();
+            dao.addJob(job);
+            response.sendRedirect("ViewJobsServlet");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.getWriter().println("Lỗi khi thêm công việc: " + e.getMessage());
+        }
     }
 
     /**

@@ -8,4 +8,40 @@
             30
         </session-timeout>
     </session-config>
+
+    <servlet>
+        <servlet-name>AddJobServlet</servlet-name>
+        <servlet-class>controller.AddJobServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AddJobServlet</servlet-name>
+        <url-pattern>/AddJobServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EditJobServlet</servlet-name>
+        <servlet-class>controller.EditJobServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EditJobServlet</servlet-name>
+        <url-pattern>/EditJobServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ViewJobsServlet</servlet-name>
+        <servlet-class>controller.ViewJobsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ViewJobsServlet</servlet-name>
+        <url-pattern>/ViewJobsServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DeleteJobServlet</servlet-name>
+        <servlet-class>controller.DeleteJobServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteJobServlet</servlet-name>
+        <url-pattern>/DeleteJobServlet</url-pattern>
+    </servlet-mapping>
 </web-app>
