@@ -7,25 +7,6 @@
     if (chatHistory == null) {
         chatHistory = new java.util.ArrayList<>();
     }
-    String prompt = request.getParameter("prompt");
-    String productName = request.getParameter("productName");
-    String productImage = request.getParameter("productImage");
-    String prefillText = null;
-    String prefillImageBase64 = null;
-    if (prompt != null && productName != null && productImage != null) {
-        prefillText = prompt + " " + productName;
-        try {
-            String imagePath = application.getRealPath("/" + productImage);
-            File imgFile = new File(imagePath);
-            if (imgFile.exists()) {
-                FileInputStream fis = new FileInputStream(imgFile);
-                byte[] bytes = new byte[(int) imgFile.length()];
-                fis.read(bytes);
-                fis.close();
-                prefillImageBase64 = Base64.getEncoder().encodeToString(bytes);
-            }
-        } catch (Exception e) {}
-    }
 %>
 <!DOCTYPE html>
 <html>
@@ -276,12 +257,12 @@
             </ul>
         </div>
         <form id="chat2-form" method="post" action="chat" enctype="multipart/form-data">
-            <div id="chat2-image-preview" style="<%= (prefillImageBase64 != null ? "display:block;" : "display:none;") %>">
-                <img id="chat2-preview-img" src="<%= (prefillImageBase64 != null ? ("data:image/png;base64," + prefillImageBase64) : "") %>" alt="Preview" />
+            <div id="chat2-image-preview" style="display:none;">
+                <img id="chat2-preview-img" src="" alt="Preview" />
                 <button type="button" class="remove-preview" onclick="removeImagePreview()">&#10006;</button>
             </div>
             <div id="chat2-form-row">
-                <input type="text" name="message" placeholder="Type your message..." <%= (prefillText != null ? ("value='" + prefillText.replace("'", "&#39;") + "'") : "") %> />
+                <input type="text" name="message" placeholder="Type your message..." />
                 <button type="button" class="image-upload-btn" title="Upload image" onclick="document.getElementById('image-upload').click();">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -292,9 +273,6 @@
                 <input id="image-upload" type="file" name="imageFile" accept="image/*" />
                 <button type="submit">Send</button>
             </div>
-            <% if (prefillImageBase64 != null) { %>
-                <input type="hidden" id="prefillImageBase64" name="prefillImageBase64" value="<%= prefillImageBase64 %>"/>
-            <% } %>
         </form>
     </div>
     <div id="chat2-nav">
@@ -397,11 +375,10 @@
         e.preventDefault();
         const input = document.querySelector('#chat2-form input[name="message"]');
         const fileInput = document.querySelector('#chat2-form input[type="file"]');
-        const prefillInput = document.getElementById('prefillImageBase64');
         const message = input.value.trim();
         const file = fileInput.files[0];
 
-        if (!message && !file && (!prefillInput || !prefillInput.value)) return;
+        if (!message && !file) return;
 
         const ul = document.querySelector('#chat2-messages ul');
         const li = document.createElement('li');
@@ -417,10 +394,6 @@
                 scrollToBottom();
             };
             reader.readAsDataURL(file);
-        } else if (prefillInput && prefillInput.value) {
-            li.innerHTML += '<br><img class="chat-image" src="data:image/png;base64,' + prefillInput.value + '"/>';
-            ul.appendChild(li);
-            scrollToBottom();
         } else {
             ul.appendChild(li);
             scrollToBottom();
@@ -433,8 +406,6 @@
 
         if (file) {
             formData.append("imageFile", file);
-        } else if (prefillInput && prefillInput.value) {
-            formData.append("prefillImageBase64", prefillInput.value);
         }
 
         input.value = '';
@@ -452,8 +423,6 @@
             if (data && data.chatHistory) {
                 renderMessages(data.chatHistory);
             }
-            // Bonus: clear prefill after send
-            if (prefillInput) prefillInput.value = '';
             document.getElementById('chat2-image-preview').style.display = 'none';
             document.getElementById('chat2-preview-img').src = '';
         })
@@ -485,11 +454,6 @@
     window.onload = function() {
         document.getElementById('chat2-form').onsubmit = sendMessageAjax;
         // Nếu có prefill image thì giữ preview, nếu không thì ẩn
-        <% if (prefillImageBase64 != null) { %>
-        document.getElementById('chat2-image-preview').style.display = 'block';
-        document.getElementById('chat2-preview-img').src = 'data:image/png;base64,<%= prefillImageBase64 %>';
-        <% } %>
-
         document.getElementById('image-upload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             const previewDiv = document.getElementById('chat2-image-preview');
@@ -521,14 +485,5 @@
         scrollToBottom(); // Scroll xuống cuối khi vừa load trang
     });
 </script>
-<% if (prefillText != null || prefillImageBase64 != null) { %>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-        document.getElementById('chat2-form').dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
-    }, 400);
-});
-</script>
-<% } %>
 </body>
 </html>
