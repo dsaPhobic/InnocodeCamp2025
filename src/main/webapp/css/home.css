@@ -1,3 +1,17 @@
+/* Animations */
+@keyframes fadeSlideDown {
+  0% { opacity: 0; transform: translateY(-30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeSlideUp {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
 /* ===== Layout tổng thể ===== */
 body {
     background: #f3f4f6;
@@ -10,6 +24,7 @@ body {
     color: #fff;
     padding: 3rem 0 2rem 0;
     text-align: center;
+    animation: fadeSlideDown 1s cubic-bezier(.4,2,.3,1) 0.1s both;
 }
 .hero h1 {
     font-size: 2.5rem;
@@ -35,6 +50,7 @@ body {
     border: 1px solid #e5e7eb;
     background: #fff;
     padding: 1.5rem;
+    transition: box-shadow .2s, transform .2s;
 }
 
 /* ===== Quick Actions Icons ===== */
@@ -177,6 +193,7 @@ body {
     padding: 1.5rem;
     display: flex;
     align-items: center;
+    animation: fadeSlideUp 0.8s cubic-bezier(.4,2,.3,1) 0.2s both;
 }
 .stat-icon {
     padding: 0.75rem;
@@ -228,10 +245,12 @@ body {
     border: 1px solid #e5e7eb;
     text-decoration: none;
     color: #222;
-    transition: box-shadow .2s;
+    transition: box-shadow .2s, transform .2s;
+    animation: popIn 0.7s cubic-bezier(.4,2,.3,1) 0.3s both;
 }
 .feature-card:hover {
-    box-shadow: 0 4px 16px #0002;
+    box-shadow: 0 8px 32px #0002;
+    transform: translateY(-4px) scale(1.03);
 }
 .feature-icon {
     padding: 0.75rem;

@@ -24,7 +24,7 @@
             <div>
                 <div class="features-title">Quick Actions</div>
                 <div class="feature-cards">
-                    <a href="${pageContext.request.contextPath}/view/inputDescription.jsp" class="feature-card">
+                    <a href="${pageContext.request.contextPath}/SkillAnalysisServlet" class="feature-card">
                         <span class="feature-icon"><i data-lucide="upload"></i></span>
                         <span class="feature-title">Skills Analysis</span>
                         <div class="feature-desc">Upload your CV or describe your experience to analyze your skills</div>
@@ -44,7 +44,7 @@
                         <span class="feature-title">My Applications</span>
                         <div class="feature-desc">Track your job applications and their status</div>
                     </a>
-                    <a href="${pageContext.request.contextPath}/chatbot.jsp" class="feature-card">
+                    <a href="${pageContext.request.contextPath}/chat2.jsp" class="feature-card">
                         <span class="feature-icon"><i data-lucide="message-square"></i></span>
                         <span class="feature-title">Career Chatbot</span>
                         <div class="feature-desc">Get AI-powered career guidance and advice</div>
@@ -113,7 +113,7 @@
             }
 
             window.addEventListener("click", function (e) {
-                
+
                 const menu = document.getElementById("userMenu");
                 const icon = document.querySelector(".user-icon");
                 if (!menu.contains(e.target) && !icon.contains(e.target)) {
@@ -122,6 +122,6 @@
             });
         </script>
         <script src="../js/chart.js"></script>
+        <jsp:include page="/chat1.jsp" />
     </body>
-
 </html>
