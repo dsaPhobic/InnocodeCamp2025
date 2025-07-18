@@ -21,40 +21,48 @@ public class SkillAnalysisServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Kiểm tra đăng nhập
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
-        String description = request.getParameter("description");
+        // Lấy file CV
         Part filePart = request.getPart("cvFile");
-
-        String fullText = "";
-
-        if (filePart != null && filePart.getSize() > 0) {
-            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String uploadDir = getServletContext().getRealPath("/") + "uploads";
-            Files.createDirectories(Paths.get(uploadDir));
-            String filePath = uploadDir + File.separator + fileName;
-            filePart.write(filePath);
-
-            // Lưu CV vào bảng UploadedCVs
-            UploadedCVDAO.save(user.getId(), fileName, filePath);
-
-            // Parse nội dung CV
-            fullText = CVParserService.parseCV(filePath);
-        } else if (description != null && !description.trim().isEmpty()) {
-            fullText = description;
+        if (filePart == null || filePart.getSize() == 0) {
+            response.sendRedirect("upload-cv.jsp?error=Vui lòng chọn file");
+            return;
         }
 
-        // Tách kỹ năng
-        List<Skill> skills = NLPService.extractSkills(fullText);
+        // Xử lý upload
+        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+        String uploadDir = getServletContext().getRealPath("/") + "uploads";
+        Files.createDirectories(Paths.get(uploadDir));
+        String filePath = uploadDir + File.separator + fileName;
+        filePart.write(filePath);
+
+        // Lưu thông tin file vào DB
+        UploadedCVDAO.save(user.getId(), fileName, filePath);
+
+        // Parse nội dung CV
+        String fullText = CVParserService.parseCV(filePath);
+
+        // Gọi GPT để trích xuất kỹ năng + score
+        List<Skill> skills = new ArrayList<>();
+        try {
+            skills = NLPService.extractSkills(fullText);
+        } catch (Exception e) {
+            request.setAttribute("error", "Lỗi khi phân tích kỹ năng: " + e.getMessage());
+            request.getRequestDispatcher("view/skillResult.jsp").forward(request, response);
+            return;
+        }
 
         // Lưu kỹ năng vào DB
         SkillDAO dao = new SkillDAO();
         dao.saveSkills(user.getId(), skills);
 
+        // Gửi sang view hiển thị
         request.setAttribute("skills", skills);
         request.getRequestDispatcher("view/skillResult.jsp").forward(request, response);
     }

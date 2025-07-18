@@ -4,20 +4,26 @@
  */
 package dao;
 
-import model.Job;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import model.Job;
 
 /**
  *
  * @author hmqua
  */
 public class JobDAO {
-    public void addJob(Job job) {
+    private Connection getConnection() throws SQLException {
+        // Sửa lại chuỗi kết nối cho phù hợp với cấu hình của bạn
+        String url = "jdbc:mysql://localhost:3306/your_db_name";
+        String user = "root";
+        String pass = "";
+        return DriverManager.getConnection(url, user, pass);
+    }
+
+    public void addJob(Job job) throws SQLException {
         String sql = "INSERT INTO Jobs (title, company, location, environment, skill_required, culture_tags, description, recruiter_email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, job.getTitle());
             ps.setString(2, job.getCompany());
             ps.setString(3, job.getLocation());
@@ -27,15 +33,12 @@ public class JobDAO {
             ps.setString(7, job.getDescription());
             ps.setString(8, job.getRecruiterEmail());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    public void updateJob(Job job) {
+    public void updateJob(Job job) throws SQLException {
         String sql = "UPDATE Jobs SET title=?, company=?, location=?, environment=?, skill_required=?, culture_tags=?, description=?, recruiter_email=? WHERE id=?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, job.getTitle());
             ps.setString(2, job.getCompany());
             ps.setString(3, job.getLocation());
@@ -46,28 +49,21 @@ public class JobDAO {
             ps.setString(8, job.getRecruiterEmail());
             ps.setInt(9, job.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    public void deleteJob(int id) {
+    public void deleteJob(int id) throws SQLException {
         String sql = "DELETE FROM Jobs WHERE id=?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    public List<Job> getAllJobs() {
+    public List<Job> getAllJobs() throws SQLException {
         List<Job> jobs = new ArrayList<>();
         String sql = "SELECT * FROM Jobs";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Job job = new Job(
                     rs.getInt("id"),
@@ -82,16 +78,13 @@ public class JobDAO {
                 );
                 jobs.add(job);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return jobs;
     }
 
-    public Job getJobById(int id) {
+    public Job getJobById(int id) throws SQLException {
         String sql = "SELECT * FROM Jobs WHERE id=?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -108,8 +101,6 @@ public class JobDAO {
                     );
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return null;
     }

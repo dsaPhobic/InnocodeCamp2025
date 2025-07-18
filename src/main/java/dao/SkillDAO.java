@@ -50,7 +50,6 @@ public class SkillDAO {
         return skills;
     }
 
-    // Xóa kỹ năng cũ của user trước khi thêm mới (tuỳ chọn)
     public void deleteSkillsByUser(int userId) {
         String sql = "DELETE FROM Skills WHERE user_id = ?";
         try (Connection conn = DBConnection.getConnection();
