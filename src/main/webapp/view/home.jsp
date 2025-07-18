@@ -334,7 +334,7 @@
                     <a href="${pageContext.request.contextPath}/HomeServlet"><i data-lucide="home"></i> Home</a>
                     <a href="${pageContext.request.contextPath}/view/inputDescription.jsp"><i data-lucide="upload"></i> Skills Analysis</a>
                     <a href="jobSuggestions.jsp"><i data-lucide="search"></i> Job Recommendations</a>
-                    <a href="skillChart.jsp"><i data-lucide="bar-chart-3"></i> Skills Chart</a>
+                    <a href="${pageContext.request.contextPath}/SkillChartServlet"><i data-lucide="bar-chart-3"></i> Skills Chart</a>
                     <a href="jobApplications.jsp"><i data-lucide="briefcase"></i> My Applications</a>
                     <a href="chatbot.jsp"><i data-lucide="message-square"></i> Career Chatbot</a>
                 </nav>
@@ -412,7 +412,7 @@
                             <span class="feature-title">Job Recommendations</span>
                             <div class="feature-desc">Get personalized job recommendations based on your skills</div>
                         </a>
-                        <a href="../skillChart.jsp" class="feature-card">
+                        <a href="${pageContext.request.contextPath}/SkillChartServlet" class="feature-card">
                             <span class="feature-icon"><i data-lucide="bar-chart-3"></i></span>
                             <span class="feature-title">Skills Chart</span>
                             <div class="feature-desc">Visualize your skills with interactive radar charts</div>

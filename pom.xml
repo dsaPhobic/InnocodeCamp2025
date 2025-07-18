@@ -51,6 +51,11 @@
             <artifactId>jakarta.servlet.jsp.jstl</artifactId>
             <version>3.0.1</version>
         </dependency>
+        <dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc</artifactId>
+    <version>12.6.1.jre11</version> <!-- Chọn version phù hợp với Java, ở đây là Java 11 -->
+</dependency>
     </dependencies>
     
     <build>
