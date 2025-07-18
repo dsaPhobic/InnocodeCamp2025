@@ -9,12 +9,13 @@ public class User {
     private String description;
     private String role;
     private String gender;
+    private String location;
     
 
     public User() {
     }
 
-    public User(int id, String fullname, String email, String password, String description, String role, String gender) {
+    public User(int id, String fullname, String email, String password, String description, String role, String gender, String location) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
@@ -22,6 +23,7 @@ public class User {
         this.description = description;
         this.role = role;
         this.gender = gender;
+        this.location = location;
     }
 
     public String getGender() {
@@ -63,6 +65,14 @@ public class User {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     // Setters
