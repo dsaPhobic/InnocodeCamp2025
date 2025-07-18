@@ -1,0 +1,106 @@
+/* navbar.css */
+.navbar {
+    background: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    padding: 0.75rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.navbar-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.navbar-logo {
+    width: 32px;
+    height: 32px;
+}
+.navbar-brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #7c3aed;
+}
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+.navbar-links a {
+    text-decoration: none;
+    color: #334155;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.navbar-links a:hover {
+    color: #2563eb;
+}
+.navbar-user {
+    position: relative;
+}
+.user-icon {
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 9999px;
+    transition: background 0.2s;
+}
+.user-icon:hover {
+    background: #f3f4f6;
+}
+.user-menu {
+    position: absolute;
+    right: 0;
+    top: 110%;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    width: 240px;
+    padding: 1rem;
+}
+.user-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+.user-menu a:hover {
+    background: #f3f4f6;
+    border-radius: 0.5rem;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+}
+.user-name {
+    font-weight: 600;
+    color: #7c3aed;
+}
+.user-email {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+.logout {
+    color: #dc2626 !important;
+}
+.hidden {
+    display: none;
+}

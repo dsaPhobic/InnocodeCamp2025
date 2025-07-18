@@ -14,26 +14,33 @@ import java.net.URI;
 
 public class LLMService {
 
-    private static final String API_KEY = ""; 
+    private static final String API_KEY = "";
     private static final String ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
-    private static final OkHttpClient client = new OkHttpClient();
+    private static final OkHttpClient client = LLMClient.getInstance();
 
-    // 👉 Dùng cho NLPService – phân tích kỹ năng (có JSON trả về)
     public static List<Skill> callGptWithPrompt(String prompt) throws Exception {
-        String content = callChatGPT(prompt); // gọi chung
+        String content = callChatGPT(prompt); // gọi GPT
+        System.out.println("[DEBUG] GPT raw content:\n" + content);
 
-        // Parse JSON content trả về từ GPT thành List<Skill>
-        JSONArray jsonArray = new JSONArray(content);
+        // 👉 Tìm đoạn JSON array từ response
+        int startIdx = content.indexOf("[");
+        int endIdx = content.lastIndexOf("]");
+        if (startIdx == -1 || endIdx == -1 || endIdx <= startIdx) {
+            throw new Exception("GPT không trả về định dạng JSON hợp lệ:\n" + content);
+        }
+
+        String jsonArrayStr = content.substring(startIdx, endIdx + 1);
+
+        // 👉 Parse JSON array an toàn
         List<Skill> skills = new ArrayList<>();
-
+        JSONArray jsonArray = new JSONArray(jsonArrayStr);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
             String name = obj.getString("skill");
             int score = obj.getInt("score");
             skills.add(new Skill(name, score));
         }
-
         return skills;
     }
 
@@ -131,5 +138,39 @@ public class LLMService {
             converted.add(new Message(cm.getRole(), cm.getContent()));
         }
         return getResponse(converted);
+    } 
+    public static void main(String[] args) {
+        try {
+            String testPrompt = "You are a strict JSON generator.\n"
+                    + "Given the following CV content, extract a list of technical skills with a relevance score from 1 to 100.\n"
+                    + "Only respond with a pure JSON array, nothing else. Format:\n"
+                    + "[{\"skill\": \"Java\", \"score\": 95}, {\"skill\": \"Spring Boot\", \"score\": 90}]\n\n"
+                    + "CV content:\n"
+                    + "I am a developer with 3 years experience in Java, Spring Boot, React, and PostgreSQL.";
+
+            String response = LLMService.callChatGPT(testPrompt);
+
+            System.out.println("=== GPT RAW RESPONSE ===");
+            System.out.println(response);
+
+            int startIdx = response.indexOf("[");
+            int endIdx = response.lastIndexOf("]");
+            if (startIdx == -1 || endIdx == -1 || endIdx <= startIdx) {
+                System.out.println("[ERROR] Not valid JSON array format.");
+                return;
+            }
+
+            String jsonArrayStr = response.substring(startIdx, endIdx + 1);
+            JSONArray jsonArray = new JSONArray(jsonArrayStr);
+
+            System.out.println("=== PARSED SKILLS ===");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                System.out.println("- " + obj.getString("skill") + " (" + obj.getInt("score") + ")");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

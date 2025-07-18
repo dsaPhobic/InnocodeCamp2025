@@ -12,6 +12,21 @@ import java.sql.*;
  * @author hmqua
  */
 public class UserDAO {
+
+    public static boolean updateUser(User user) {
+        try (java.sql.Connection conn = DBConnection.getConnection()) {
+            String sql = "UPDATE users SET fullname=?, email=? WHERE id=?";
+            java.sql.PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, user.getFullname());
+            ps.setString(2, user.getEmail());
+            ps.setInt(3, user.getId());
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     // Authenticate user by email and password
     public User getUserByEmailAndPassword(String email, String password) {
         String sql = "SELECT * FROM Users WHERE email = ? AND password = ?";
