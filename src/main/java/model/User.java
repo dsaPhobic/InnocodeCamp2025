@@ -10,12 +10,13 @@ public class User {
     private String role;
     private String gender;
     private String location;
+    private java.sql.Date dateOfBirth;
     
 
     public User() {
     }
 
-    public User(int id, String fullname, String email, String password, String description, String role, String gender, String location) {
+    public User(int id, String fullname, String email, String password, String description, String role, String gender, String location, java.sql.Date dateOfBirth) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
@@ -24,6 +25,7 @@ public class User {
         this.role = role;
         this.gender = gender;
         this.location = location;
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getGender() {
@@ -73,6 +75,13 @@ public class User {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public java.sql.Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+    public void setDateOfBirth(java.sql.Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     // Setters
