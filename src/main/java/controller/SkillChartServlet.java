@@ -11,6 +11,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import dao.SkillDAO;
+import model.Skill;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  *
@@ -57,7 +62,27 @@ public class SkillChartServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession(false);
+        System.out.println("[SkillChartServlet] Session ID: " + (session != null ? session.getId() : "null"));
+        System.out.println("[SkillChartServlet] Session user: " + (session != null ? session.getAttribute("user") : "null"));
+        model.User user = (session != null) ? (model.User) session.getAttribute("user") : null;
+        if (user == null) {
+            response.sendRedirect("view/login.jsp");
+            return;
+        }
+        int userId = user.getId();
+        System.out.println("[SkillChartServlet] userId: " + userId);
+        SkillDAO skillDAO = new SkillDAO();
+        List<Skill> skills = skillDAO.getSkillsByUser(userId);
+        System.out.println("[SkillChartServlet] Skills count: " + (skills != null ? skills.size() : 0));
+        if (skills != null) {
+            for (Skill s : skills) {
+                System.out.println("Skill: " + s.getSkillName() + " - " + s.getScore());
+            }
+        }
+        request.setAttribute("skills", skills);
+        RequestDispatcher rd = request.getRequestDispatcher("view/skillChart.jsp");
+        rd.forward(request, response);
     }
 
     /**
