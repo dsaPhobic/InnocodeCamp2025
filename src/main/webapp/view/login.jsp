@@ -60,7 +60,7 @@
                             <label for="rememberMe" style="margin: 0;">Remember Me</label>
                         </div>
                         <!-- FORGOT PASSWORD LINK -->
-                        
+
                         <br>
                         <button type="submit" class="signIn-btn">Sign In</button>
                     </form>
@@ -71,7 +71,7 @@
             window.contextPath = '${pageContext.request.contextPath}';
         </script>
         <script src="${pageContext.request.contextPath}/js/FishTank.js"></script>
-        
+
 
     </body>
 </html>

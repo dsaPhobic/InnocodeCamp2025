@@ -35,6 +35,8 @@
             <th>Văn hoá/Tags</th>
             <th>Mô tả</th>
             <th>Email tuyển dụng</th>
+            <th>Trạng thái</th>
+            <th>Ngày đăng</th>
             <th>Hành động</th>
         </tr>
         <% if (jobs != null && !jobs.isEmpty()) {
@@ -49,6 +51,8 @@
             <td><%=job.getCultureTags()%></td>
             <td><%=job.getDescription()%></td>
             <td><%=job.getRecruiterEmail()%></td>
+            <td><%=job.getStatus()%></td>
+            <td><%=job.getPostedAt()!=null? new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(job.getPostedAt()):""%></td>
             <td>
                 <a href="editJob.jsp?id=<%=job.getId()%>">Edit</a>
                 <form action="../../DeleteJobServlet" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xoá?');">

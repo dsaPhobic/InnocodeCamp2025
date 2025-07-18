@@ -40,7 +40,14 @@
         <label>Mô tả:</label><br>
         <textarea name="description"><%=job.getDescription()%></textarea><br>
         <label>Email nhà tuyển dụng:</label><br>
-        <input type="email" name="recruiter_email" value="<%=job.getRecruiterEmail()%>" required><br><br>
+        <input type="email" name="recruiter_email" value="<%=job.getRecruiterEmail()%>" required><br>
+        <label>Trạng thái:</label><br>
+        <select name="status">
+            <option value="active" <%=job.getStatus()!=null && job.getStatus().equals("active")?"selected":""%>>Đang tuyển</option>
+            <option value="inactive" <%=job.getStatus()!=null && job.getStatus().equals("inactive")?"selected":""%>>Tạm dừng</option>
+        </select><br>
+        <label>Ngày đăng bài:</label><br>
+        <input type="datetime-local" name="posted_at" value="<%=job.getPostedAt()!=null? new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(job.getPostedAt()):""%>"><br><br>
         <input type="submit" value="Cập nhật công việc">
     </form>
     <br>

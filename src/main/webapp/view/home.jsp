@@ -19,6 +19,38 @@
             <h1>Welcome back, ${sessionScope.user.fullname}! 👋</h1>
             <p>Ready to advance your IT career? Explore our tools and find your next opportunity.</p>
         </div>
+<<<<<<< HEAD
+        <div class="main-grid">
+            <!-- Features Section -->
+            <div>
+                <div class="features-title">Quick Actions</div>
+                <div class="feature-cards">
+                    <a href="../inputDescription.jsp" class="feature-card">
+                        <span class="feature-icon"><i data-lucide="upload"></i></span>
+                        <span class="feature-title">Skills Analysis</span>
+                        <div class="feature-desc">Upload your CV or describe your experience to analyze your skills</div>
+                    </a>
+                    <a href="JobRecommendationServlet" class="feature-card">
+                        <span class="feature-icon"><i data-lucide="search"></i></span>
+                        <span class="feature-title">Job Recommendations</span>
+                        <div class="feature-desc">Get personalized job recommendations based on your skills</div>
+                    </a>
+                    <a href="../skillChart.jsp" class="feature-card">
+                        <span class="feature-icon"><i data-lucide="bar-chart-3"></i></span>
+                        <span class="feature-title">Skills Chart</span>
+                        <div class="feature-desc">Visualize your skills with interactive radar charts</div>
+                    </a>
+                    <a href="../jobApplications.jsp" class="feature-card">
+                        <span class="feature-icon"><i data-lucide="briefcase"></i></span>
+                        <span class="feature-title">My Applications</span>
+                        <div class="feature-desc">Track your job applications and their status</div>
+                    </a>
+                    <a href="../chatbot.jsp" class="feature-card">
+                        <span class="feature-icon"><i data-lucide="message-square"></i></span>
+                        <span class="feature-title">Career Chatbot</span>
+                        <div class="feature-desc">Get AI-powered career guidance and advice</div>
+                    </a>
+=======
         <div class="container">
             <!-- Stats Section -->
             <div class="stats-grid">
@@ -49,6 +81,7 @@
                         <div class="stat-title">Chat Sessions</div>
                         <div class="stat-value">${stats.totalChats}</div>
                     </div>
+>>>>>>> 7744d65b02d00dd2c2602a307ef0b22984c9c6b9
                 </div>
             </div>
             <div class="main-grid">

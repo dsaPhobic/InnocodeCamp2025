@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.util.Date;
+
 public class Job {
     private int id;
     private String title;
@@ -14,10 +16,14 @@ public class Job {
     private String cultureTags;
     private String description;
     private String recruiterEmail;
+    private String status;
+    private Date postedAt;
+    private float salary;
+    private String experience;
 
     public Job() {}
 
-    public Job(int id, String title, String company, String location, String environment, String skillRequired, String cultureTags, String description, String recruiterEmail) {
+    public Job(int id, String title, String company, String location, String environment, String skillRequired, String cultureTags, String description, String recruiterEmail, String status, Date postedAt, float salary, String experience) {
         this.id = id;
         this.title = title;
         this.company = company;
@@ -27,6 +33,10 @@ public class Job {
         this.cultureTags = cultureTags;
         this.description = description;
         this.recruiterEmail = recruiterEmail;
+        this.status = status;
+        this.postedAt = postedAt;
+        this.salary = salary;
+        this.experience = experience;
     }
 
     // Getters and Setters
@@ -48,4 +58,12 @@ public class Job {
     public void setDescription(String description) { this.description = description; }
     public String getRecruiterEmail() { return recruiterEmail; }
     public void setRecruiterEmail(String recruiterEmail) { this.recruiterEmail = recruiterEmail; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public Date getPostedAt() { return postedAt; }
+    public void setPostedAt(Date postedAt) { this.postedAt = postedAt; }
+    public float getSalary() { return salary; }
+    public void setSalary(float salary) { this.salary = salary; }
+    public String getExperience() { return experience; }
+    public void setExperience(String experience) { this.experience = experience; }
 }
