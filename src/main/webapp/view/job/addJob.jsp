@@ -29,7 +29,14 @@
         <label>Mô tả:</label><br>
         <textarea name="description"></textarea><br>
         <label>Email nhà tuyển dụng:</label><br>
-        <input type="email" name="recruiter_email" required><br><br>
+        <input type="email" name="recruiter_email" required><br>
+        <label>Trạng thái:</label><br>
+        <select name="status">
+            <option value="active">Đang tuyển</option>
+            <option value="inactive">Tạm dừng</option>
+        </select><br>
+        <label>Ngày đăng bài:</label><br>
+        <input type="datetime-local" name="posted_at"><br><br>
         <input type="submit" value="Thêm công việc">
     </form>
     <br>

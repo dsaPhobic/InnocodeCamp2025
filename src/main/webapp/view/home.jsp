@@ -187,7 +187,7 @@
                         <span class="feature-title">Skills Analysis</span>
                         <div class="feature-desc">Upload your CV or describe your experience to analyze your skills</div>
                     </a>
-                    <a href="../jobSuggestions.jsp" class="feature-card">
+                    <a href="JobRecommendationServlet" class="feature-card">
                         <span class="feature-icon"><i data-lucide="search"></i></span>
                         <span class="feature-title">Job Recommendations</span>
                         <div class="feature-desc">Get personalized job recommendations based on your skills</div>

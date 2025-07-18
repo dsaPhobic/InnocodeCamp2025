@@ -82,7 +82,19 @@ public class AddJobServlet extends HttpServlet {
         String cultureTags = request.getParameter("culture_tags");
         String description = request.getParameter("description");
         String recruiterEmail = request.getParameter("recruiter_email");
-        Job job = new Job(0, title, company, location, environment, skillRequired, cultureTags, description, recruiterEmail);
+        String status = request.getParameter("status");
+        String postedAtStr = request.getParameter("posted_at");
+        java.util.Date postedAt = null;
+        if (postedAtStr != null && !postedAtStr.isEmpty()) {
+            try { postedAt = java.sql.Timestamp.valueOf(postedAtStr + ":00"); } catch (Exception ex) { postedAt = new java.util.Date(); }
+        } else {
+            postedAt = new java.util.Date();
+        }
+        String salaryStr = request.getParameter("salary");
+        float salary = 0;
+        try { salary = Float.parseFloat(salaryStr); } catch (Exception ex) {}
+        String experience = request.getParameter("experience");
+        Job job = new Job(0, title, company, location, environment, skillRequired, cultureTags, description, recruiterEmail, status, postedAt, salary, experience);
         try {
             JobDAO dao = new JobDAO();
             dao.addJob(job);

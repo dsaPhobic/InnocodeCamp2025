@@ -30,12 +30,12 @@ public class ApplyJobServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("currentUser") == null) {
-            response.sendRedirect("login.jsp");
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect("view/login.jsp");
             return;
         }
 
-        User currentUser = (User) session.getAttribute("currentUser");
+        User currentUser = (User) session.getAttribute("user");
         int userId = currentUser.getId();
         String jobIdStr = request.getParameter("jobId");
 

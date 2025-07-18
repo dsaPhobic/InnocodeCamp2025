@@ -22,7 +22,7 @@ public class JobDAO {
     }
 
     public void addJob(Job job) throws SQLException {
-        String sql = "INSERT INTO Jobs (title, company, location, environment, skill_required, culture_tags, description, recruiter_email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Jobs (title, company, location, environment, skill_required, culture_tags, description, recruiter_email, status, posted_at, salary, experience) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, job.getTitle());
             ps.setString(2, job.getCompany());
@@ -32,12 +32,20 @@ public class JobDAO {
             ps.setString(6, job.getCultureTags());
             ps.setString(7, job.getDescription());
             ps.setString(8, job.getRecruiterEmail());
+            ps.setString(9, job.getStatus());
+            if (job.getPostedAt() != null) {
+                ps.setTimestamp(10, new java.sql.Timestamp(job.getPostedAt().getTime()));
+            } else {
+                ps.setTimestamp(10, new java.sql.Timestamp(System.currentTimeMillis()));
+            }
+            ps.setFloat(11, job.getSalary());
+            ps.setString(12, job.getExperience());
             ps.executeUpdate();
         }
     }
 
     public void updateJob(Job job) throws SQLException {
-        String sql = "UPDATE Jobs SET title=?, company=?, location=?, environment=?, skill_required=?, culture_tags=?, description=?, recruiter_email=? WHERE id=?";
+        String sql = "UPDATE Jobs SET title=?, company=?, location=?, environment=?, skill_required=?, culture_tags=?, description=?, recruiter_email=?, status=?, posted_at=?, salary=?, experience=? WHERE id=?";
         try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, job.getTitle());
             ps.setString(2, job.getCompany());
@@ -47,7 +55,15 @@ public class JobDAO {
             ps.setString(6, job.getCultureTags());
             ps.setString(7, job.getDescription());
             ps.setString(8, job.getRecruiterEmail());
-            ps.setInt(9, job.getId());
+            ps.setString(9, job.getStatus());
+            if (job.getPostedAt() != null) {
+                ps.setTimestamp(10, new java.sql.Timestamp(job.getPostedAt().getTime()));
+            } else {
+                ps.setTimestamp(10, new java.sql.Timestamp(System.currentTimeMillis()));
+            }
+            ps.setFloat(11, job.getSalary());
+            ps.setString(12, job.getExperience());
+            ps.setInt(13, job.getId());
             ps.executeUpdate();
         }
     }
@@ -74,7 +90,11 @@ public class JobDAO {
                     rs.getString("skill_required"),
                     rs.getString("culture_tags"),
                     rs.getString("description"),
-                    rs.getString("recruiter_email")
+                    rs.getString("recruiter_email"),
+                    rs.getString("status"),
+                    rs.getTimestamp("posted_at"),
+                    rs.getFloat("salary"),
+                    rs.getString("experience")
                 );
                 jobs.add(job);
             }
@@ -97,7 +117,11 @@ public class JobDAO {
                         rs.getString("skill_required"),
                         rs.getString("culture_tags"),
                         rs.getString("description"),
-                        rs.getString("recruiter_email")
+                        rs.getString("recruiter_email"),
+                        rs.getString("status"),
+                        rs.getTimestamp("posted_at"),
+                        rs.getFloat("salary"),
+                        rs.getString("experience")
                     );
                 }
             }
