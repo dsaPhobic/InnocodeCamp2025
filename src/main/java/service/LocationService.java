@@ -1,4 +1,4 @@
-package service;
+    package service;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -54,13 +54,7 @@ public class LocationService {
         }
     }
 
-    /**
-     * Kiểm tra hai điểm GPS có nằm trong bán kính km không
-     * @param gpscv chuỗi "lat,lon" thứ nhất
-     * @param gpsjd chuỗi "lat,lon" thứ hai
-     * @param radiusKm bán kính kiểm tra (km)
-     * @return true nếu khoảng cách <= radiusKm, false nếu không hoặc đầu vào không hợp lệ
-     */
+
     public static boolean isWithinRadius(String gpscv, String gpsjd, double radiusKm) {
         try {
             String[] parts1 = gpscv.split(",");

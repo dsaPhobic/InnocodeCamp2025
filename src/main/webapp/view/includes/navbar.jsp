@@ -10,7 +10,7 @@
             <a href="${pageContext.request.contextPath}/HomeServlet"><i data-lucide="home"></i> Home</a>
             <a href="${pageContext.request.contextPath}/view/inputDescription.jsp"><i data-lucide="upload"></i> Skills Analysis</a>
             <a href="jobSuggestions.jsp"><i data-lucide="search"></i> Job Recommendations</a>
-            <a href="skillChart.jsp"><i data-lucide="bar-chart-3"></i> Skills Chart</a>
+            <a href="/SkillChartServlet"><i data-lucide="bar-chart-3"></i> Skills Chart</a>
             <a href="jobApplications.jsp"><i data-lucide="briefcase"></i> My Applications</a>
             <a href="chatbot.jsp"><i data-lucide="message-square"></i> Career Chatbot</a>
         </nav>
