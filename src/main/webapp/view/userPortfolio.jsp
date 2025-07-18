@@ -1,6 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
     model.User user = (model.User) session.getAttribute("user");
+    // Đọc skills trực tiếp từ database
+    dao.SkillDAO skillDAO = new dao.SkillDAO();
+    java.util.List<model.Skill> userSkills = skillDAO.getSkillsByUser(user.getId());
+    request.setAttribute("userSkills", userSkills);
 %>
 <!DOCTYPE html>
 <html>
@@ -78,6 +83,20 @@
             font-size: 1.15rem;
             color: #374151;
         }
+
+        .skills-list {
+            margin-top: 4px;
+        }
+
+        .skill-text {
+            display: inline-block;
+            background-color: #e5e7eb;
+            color: #374151;
+            padding: 4px 12px;
+            margin: 2px 4px 2px 0;
+            border-radius: 16px;
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -120,6 +139,23 @@
         <div class="field">
             <label>Role:</label>
             <div class="value">${user.role}</div>
+        </div>
+
+        <!-- Phần Skills -->
+        <div class="field">
+            <label>Skills:</label>
+            <div class="skills-list">
+                <c:choose>
+                    <c:when test="${not empty userSkills}">
+                        <c:forEach var="skill" items="${userSkills}">
+                            <span class="skill-text">${skill.skillName} (${skill.score}/100)</span>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="value">Chưa có kỹ năng nào</div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
         </div>
     </div>
 </div>

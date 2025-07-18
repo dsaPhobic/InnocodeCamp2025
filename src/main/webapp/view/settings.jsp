@@ -67,7 +67,7 @@
             color: #7c3aed;
             font-weight: 600;
             font-size: 1.25rem;
-            text-decoration: underline;
+            text-decoration: none;
             border: none;
             background: none;
             padding: 0 0.5rem;
@@ -113,6 +113,68 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+        }
+        .skill-list-box {
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem 1.2rem 0.5rem 1.2rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e0e7ef;
+        }
+        .skill-card {
+            background: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 4px 0 #e0e7ef;
+            padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .skill-input {
+            max-width: 55%;
+        }
+        .score-input {
+            max-width: 25%;
+        }
+        .skill-remove-btn {
+            min-width: 40px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-outline-primary {
+            border: 1.5px solid #2563eb;
+            color: #2563eb;
+            background: #fff;
+            font-weight: 600;
+            border-radius: 1.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-outline-primary:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+        .btn-outline-danger {
+            border: 1.5px solid #ef4444;
+            color: #ef4444;
+            background: #fff;
+            font-weight: 600;
+            border-radius: 1.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-outline-danger:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+        .skill-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        .skill-row input {
+            margin: 0;
         }
     </style>
 </head>
@@ -189,6 +251,24 @@
             <div class="mb-3">
                 <label class="form-label">Role</label>
                 <input type="text" class="form-control" value="${user.role}" readonly>
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Kỹ năng cá nhân</label>
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableSkillEdit(this)" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
+                </button>
+            </div>
+            <div class="mb-3" id="skills-section">
+                <div id="skills-list" style="pointer-events: none; opacity: 0.6;">
+                    <c:forEach var="skill" items="${userSkills}">
+                        <div class="skill-row d-flex align-items-center mb-2">
+                            <input type="text" name="skillName" class="form-control me-2" value="${skill.skillName}" placeholder="Tên kỹ năng" style="flex: 2;" readonly>
+                            <input type="number" name="skillScore" class="form-control me-2" value="${skill.score}" min="0" max="100" placeholder="Điểm (0-100)" style="flex: 1;" readonly>
+                            <button type="button" class="btn btn-link p-0" onclick="removeSkillRow(this)" disabled>Remove</button>
+                        </div>
+                    </c:forEach>
+                </div>
+                <button type="button" class="btn btn-link" onclick="addSkillRow()" disabled>+ Thêm kỹ năng</button>
             </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary mt-2">Update</button>
@@ -271,6 +351,46 @@
                     document.getElementById('update-message').innerHTML = '<div class="alert alert-info mt-3 text-center">Cập nhật thất bại!</div>';
                 });
                 return false;
+            }
+
+            function addSkillRow() {
+                var container = document.getElementById('skills-list');
+                var div = document.createElement('div');
+                div.className = 'skill-row d-flex align-items-center mb-2';
+                div.innerHTML = `
+                    <input type="text" name="skillName" class="form-control me-2" placeholder="Tên kỹ năng" style="flex: 2;">
+                    <input type="number" name="skillScore" class="form-control me-2" min="0" max="100" placeholder="Điểm (0-100)" style="flex: 1;">
+                    <button type="button" class="btn btn-link p-0" onclick="removeSkillRow(this)">Remove</button>
+                `;
+                container.appendChild(div);
+            }
+            function removeSkillRow(btn) {
+                btn.parentElement.remove();
+            }
+
+            function enableSkillEdit(btn) {
+                var skillsSection = document.getElementById('skills-section');
+                var skillsList = document.getElementById('skills-list');
+                var addButton = skillsList.nextElementSibling;
+                
+                // Enable tất cả input và button
+                var inputs = skillsList.querySelectorAll('input');
+                inputs.forEach(function(input) {
+                    input.removeAttribute('readonly');
+                });
+                
+                var removeButtons = skillsList.querySelectorAll('button');
+                removeButtons.forEach(function(button) {
+                    button.disabled = false;
+                });
+                
+                addButton.disabled = false;
+                
+                // Enable pointer events và opacity
+                skillsList.style.pointerEvents = 'auto';
+                skillsList.style.opacity = '1';
+                
+                btn.disabled = true;
             }
         </script>
     </div>

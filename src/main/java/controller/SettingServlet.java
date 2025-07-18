@@ -2,6 +2,9 @@ package controller;
 
 import dao.UserDAO;
 import model.User;
+import dao.SkillDAO;
+import model.Skill;
+import java.util.List;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
@@ -32,6 +35,14 @@ public class SettingServlet extends HttpServlet {
                 resp.getWriter().write("{\"found\":false}");
             }
             return;
+        }
+        // Lấy danh sách skill của user
+        HttpSession session = req.getSession(false);
+        model.User user = (session != null) ? (model.User) session.getAttribute("user") : null;
+        if (user != null) {
+            SkillDAO skillDAO = new SkillDAO();
+            List<Skill> userSkills = skillDAO.getSkillsByUser(user.getId());
+            req.setAttribute("userSkills", userSkills);
         }
         req.getRequestDispatcher("view/settings.jsp").forward(req, resp);
     }
@@ -64,6 +75,33 @@ public class SettingServlet extends HttpServlet {
         user.setLocation(location);
         user.setDateOfBirth(dateOfBirth);
         boolean success = UserDAO.updateUser(user);
+        // Xử lý cập nhật skill
+        String[] skillNames = req.getParameterValues("skillName");
+        String[] skillScores = req.getParameterValues("skillScore");
+        if (skillNames != null && skillScores != null && skillNames.length == skillScores.length) {
+            SkillDAO skillDAO = new SkillDAO();
+            skillDAO.deleteSkillsByUser(user.getId());
+            List<Skill> newSkills = new java.util.ArrayList<>();
+            for (int i = 0; i < skillNames.length; i++) {
+                String name = skillNames[i];
+                String scoreStr = skillScores[i];
+                if (name != null && !name.trim().isEmpty() && scoreStr != null && !scoreStr.trim().isEmpty()) {
+                    try {
+                        int score = Integer.parseInt(scoreStr);
+                        newSkills.add(new Skill(name.trim(), score));
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+            if (!newSkills.isEmpty()) {
+                skillDAO.saveSkills(user.getId(), newSkills);
+            }
+            req.setAttribute("userSkills", newSkills);
+        } else {
+            // Nếu không có skill mới, lấy lại skill hiện tại
+            SkillDAO skillDAO = new SkillDAO();
+            List<Skill> userSkills = skillDAO.getSkillsByUser(user.getId());
+            req.setAttribute("userSkills", userSkills);
+        }
         if (success) {
             session.setAttribute("user", user);
             req.setAttribute("message", "Cập nhật thành công!");
