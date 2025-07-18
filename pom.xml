@@ -31,12 +31,19 @@
             <version>2.0.1</version>
         </dependency>
 
-        <!-- Jakarta JSTL -->
+        <!-- Jakarta Servlet API -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version> <!-- tương ứng với Servlet 6 -->
+            <version>6.0.0</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- ✅ JSTL Jakarta EE 10 -->
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
@@ -50,8 +57,8 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>12.2.0.jre11</version>
         </dependency>
-
-        <!-- JSON libraries -->
+       
+        <!-- JSON -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -70,14 +77,14 @@
             <version>0.18.2</version>
         </dependency>
 
-        <!-- OkHttp for HTTP requests -->
+        <!-- OkHttp -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>4.12.0</version>
         </dependency>
 
-        <!-- Apache POI (DOCX) -->
+        <!-- Apache POI (Word DOCX) -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
