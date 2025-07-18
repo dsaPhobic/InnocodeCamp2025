@@ -17,7 +17,7 @@ public class LLMService {
     private static final String API_KEY = "";
     private static final String ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
-    private static final OkHttpClient client = new OkHttpClient();
+    private static final OkHttpClient client = LLMClient.getInstance();
 
     public static List<Skill> callGptWithPrompt(String prompt) throws Exception {
         String content = callChatGPT(prompt); // gọi GPT
@@ -138,5 +138,39 @@ public class LLMService {
             converted.add(new Message(cm.getRole(), cm.getContent()));
         }
         return getResponse(converted);
+    } 
+    public static void main(String[] args) {
+        try {
+            String testPrompt = "You are a strict JSON generator.\n"
+                    + "Given the following CV content, extract a list of technical skills with a relevance score from 1 to 100.\n"
+                    + "Only respond with a pure JSON array, nothing else. Format:\n"
+                    + "[{\"skill\": \"Java\", \"score\": 95}, {\"skill\": \"Spring Boot\", \"score\": 90}]\n\n"
+                    + "CV content:\n"
+                    + "I am a developer with 3 years experience in Java, Spring Boot, React, and PostgreSQL.";
+
+            String response = LLMService.callChatGPT(testPrompt);
+
+            System.out.println("=== GPT RAW RESPONSE ===");
+            System.out.println(response);
+
+            int startIdx = response.indexOf("[");
+            int endIdx = response.lastIndexOf("]");
+            if (startIdx == -1 || endIdx == -1 || endIdx <= startIdx) {
+                System.out.println("[ERROR] Not valid JSON array format.");
+                return;
+            }
+
+            String jsonArrayStr = response.substring(startIdx, endIdx + 1);
+            JSONArray jsonArray = new JSONArray(jsonArrayStr);
+
+            System.out.println("=== PARSED SKILLS ===");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                System.out.println("- " + obj.getString("skill") + " (" + obj.getInt("score") + ")");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
