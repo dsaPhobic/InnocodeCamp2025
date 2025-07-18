@@ -14,26 +14,33 @@ import java.net.URI;
 
 public class LLMService {
 
-    private static final String API_KEY = ""; 
+    private static final String API_KEY = "";
     private static final String ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
     private static final OkHttpClient client = new OkHttpClient();
 
-    // 👉 Dùng cho NLPService – phân tích kỹ năng (có JSON trả về)
     public static List<Skill> callGptWithPrompt(String prompt) throws Exception {
-        String content = callChatGPT(prompt); // gọi chung
+        String content = callChatGPT(prompt); // gọi GPT
+        System.out.println("[DEBUG] GPT raw content:\n" + content);
 
-        // Parse JSON content trả về từ GPT thành List<Skill>
-        JSONArray jsonArray = new JSONArray(content);
+        // 👉 Tìm đoạn JSON array từ response
+        int startIdx = content.indexOf("[");
+        int endIdx = content.lastIndexOf("]");
+        if (startIdx == -1 || endIdx == -1 || endIdx <= startIdx) {
+            throw new Exception("GPT không trả về định dạng JSON hợp lệ:\n" + content);
+        }
+
+        String jsonArrayStr = content.substring(startIdx, endIdx + 1);
+
+        // 👉 Parse JSON array an toàn
         List<Skill> skills = new ArrayList<>();
-
+        JSONArray jsonArray = new JSONArray(jsonArrayStr);
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject obj = jsonArray.getJSONObject(i);
             String name = obj.getString("skill");
             int score = obj.getInt("score");
             skills.add(new Skill(name, score));
         }
-
         return skills;
     }
 
