@@ -114,67 +114,103 @@
             display: flex;
             align-items: center;
         }
-        .skill-list-box {
-            background: #f8fafc;
+        .location-selector {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 2px solid #e2e8f0;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .location-selector select {
             border-radius: 0.75rem;
-            padding: 1rem 1.2rem 0.5rem 1.2rem;
-            margin-bottom: 0.5rem;
-            border: 1px solid #e0e7ef;
-        }
-        .skill-card {
-            background: #fff;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 4px 0 #e0e7ef;
-            padding: 0.5rem 0.5rem 0.5rem 0.5rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            gap: 0.5rem;
-        }
-        .skill-input {
-            max-width: 55%;
-        }
-        .score-input {
-            max-width: 25%;
-        }
-        .skill-remove-btn {
-            min-width: 40px;
-            font-size: 1.3em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .btn-outline-primary {
-            border: 1.5px solid #2563eb;
-            color: #2563eb;
-            background: #fff;
-            font-weight: 600;
-            border-radius: 1.5rem;
-            transition: background 0.2s, color 0.2s;
-        }
-        .btn-outline-primary:hover {
-            background: #2563eb;
-            color: #fff;
-        }
-        .btn-outline-danger {
-            border: 1.5px solid #ef4444;
-            color: #ef4444;
-            background: #fff;
-            font-weight: 600;
-            border-radius: 1.5rem;
-            transition: background 0.2s, color 0.2s;
-        }
-        .btn-outline-danger:hover {
-            background: #ef4444;
-            color: #fff;
-        }
-        .skill-row {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            border: 2px solid #e5e7eb;
+            font-size: 1.45rem;
+            line-height: 1.4;
+            padding: 0.8rem 1.2rem;
+            background: #fff !important;
+            color: #1f2937 !important;
+            transition: all 0.3s ease;
             width: 100%;
+            display: block;
+            box-sizing: border-box;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-weight: 500;
+            height: auto;
+            min-height: 2.8rem;
         }
-        .skill-row input {
-            margin: 0;
+        .location-selector select option {
+            background: #fff !important;
+            color: #1f2937 !important;
+            padding: 0.6rem 1rem;
+            font-size: 1.4rem;
+            line-height: 1.3;
+            font-weight: 400;
+        }
+        .location-selector select:disabled {
+            background: #f9fafb !important;
+            color: #9ca3af !important;
+            cursor: not-allowed;
+            border-color: #d1d5db !important;
+        }
+        .location-selector select:not(:disabled) {
+            background: #fff !important;
+            color: #1f2937 !important;
+        }
+        
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+            .location-selector select {
+                font-size: 1.4rem;
+                padding: 0.7rem 1rem;
+                min-height: 2.6rem;
+            }
+            .location-selector select option {
+                font-size: 1.3rem;
+                padding: 0.5rem 0.8rem;
+            }
+        }
+        .location-selector select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: #f8fafc;
+        }
+        .location-selector select:disabled {
+            background: #f9fafb;
+            color: #9ca3af;
+            cursor: not-allowed;
+            border-color: #d1d5db;
+        }
+        .location-selector select:hover:not(:disabled) {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+        .location-display {
+            transition: opacity 0.3s ease;
+        }
+        .field-display {
+            transition: opacity 0.3s ease;
+        }
+        .location-selector .btn {
+            font-size: 1.5rem;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-width: 2px;
+            min-width: 140px;
+        }
+        .location-selector .btn svg {
+            vertical-align: middle;
+        }
+        .location-selector .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .location-selector .btn:active {
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -189,7 +225,9 @@
                 </button>
             </div>
             <div class="mb-3">
-                <input type="text" id="fullName" name="fullName" class="form-control" value="${user.fullname}" readonly required>
+                <div class="field-display" id="fullName-display" style="pointer-events: none; opacity: 0.6;">
+                    <input type="text" id="fullName" name="fullName" class="form-control" value="${user.fullname}" readonly required>
+                </div>
             </div>
             <div class="mb-3 d-flex align-items-center">
                 <label class="form-label flex-grow-1">Description</label>
@@ -198,7 +236,9 @@
                 </button>
             </div>
             <div class="mb-3">
-                <textarea id="description" name="description" class="form-control" rows="2" readonly>${user.description}</textarea>
+                <div class="field-display" id="description-display" style="pointer-events: none; opacity: 0.6;">
+                    <textarea id="description" name="description" class="form-control" rows="2" readonly>${user.description}</textarea>
+                </div>
             </div>
             <div class="mb-3 d-flex align-items-center">
                 <label class="form-label flex-grow-1">Gender</label>
@@ -207,17 +247,58 @@
                 </button>
             </div>
             <div class="mb-3">
-                <input type="text" id="gender" name="gender" class="form-control" value="${user.gender}" readonly>
+                <div class="field-display" id="gender-display" style="pointer-events: none; opacity: 0.6;">
+                    <input type="text" id="gender" name="gender" class="form-control" value="${user.gender}" readonly>
+                </div>
             </div>
             <div class="mb-3 d-flex align-items-center">
                 <label class="form-label flex-grow-1">Location</label>
-                <span id="location-status" style="margin-left:8px;"></span>
-                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'location')" title="Edit">
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableLocationEdit(this)" title="Edit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
                 </button>
             </div>
-            <div class="mb-3">
-                <input type="text" id="location" name="location" class="form-control" value="${user.location}" readonly oninput="checkLocationValid()">
+            <div class="mb-3" id="location-section">
+                <div class="location-display" id="location-display" style="pointer-events: none; opacity: 0.6;">
+                    <input type="text" id="location" name="location" class="form-control" value="${user.location}" readonly>
+                </div>
+                <div class="location-selector" id="location-selector" style="display: none;">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-dark mb-2">Tỉnh/Thành phố</label>
+                            <select id="province-select" class="form-control" disabled>
+                                <option value="">Chọn Tỉnh/Thành phố</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-dark mb-2">Quận/Huyện</label>
+                            <select id="district-select" class="form-control" disabled>
+                                <option value="">Chọn Quận/Huyện</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-bold text-dark mb-2">Phường/Xã</label>
+                            <select id="ward-select" class="form-control" disabled>
+                                <option value="">Chọn Phường/Xã</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12 text-center">
+                            <button type="button" class="btn btn-primary me-3 px-4 py-2" onclick="saveLocation()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" fill="none" viewBox="0 0 24 24" style="margin-right: 0.7rem;">
+                                    <path stroke="currentColor" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Lưu địa chỉ
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary px-4 py-2" onclick="cancelLocationEdit()">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1.3em" height="1.3em" fill="none" viewBox="0 0 24 24" style="margin-right: 0.7rem;">
+                                    <path stroke="currentColor" stroke-width="2" d="M18 6L6 18M6 6l12 12"/>
+                                </svg>
+                                Hủy
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="mb-3 d-flex align-items-center">
                 <label class="form-label flex-grow-1">Date of Birth</label>
@@ -226,7 +307,9 @@
                 </button>
             </div>
             <div class="mb-3">
-                <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control" value="${user.dateOfBirth}" readonly required onkeydown="return false;">
+                <div class="field-display" id="dateOfBirth-display" style="pointer-events: none; opacity: 0.6;">
+                    <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control" value="${user.dateOfBirth}" readonly required onkeydown="return false;">
+                </div>
             </div>
             <div class="mb-3 d-flex align-items-center">
                 <label class="form-label flex-grow-1">Password</label>
@@ -235,7 +318,9 @@
                 </button>
             </div>
             <div class="mb-3">
-                <input type="password" id="password" name="password" class="form-control" value="${user.password}" readonly required>
+                <div class="field-display" id="password-display" style="pointer-events: none; opacity: 0.6;">
+                    <input type="password" id="password" name="password" class="form-control" value="${user.password}" readonly required>
+                </div>
             </div>
             <!-- Các trường không cho chỉnh sửa đưa xuống cuối -->
             <div class="mb-3">
@@ -252,24 +337,6 @@
                 <label class="form-label">Role</label>
                 <input type="text" class="form-control" value="${user.role}" readonly>
             </div>
-            <div class="mb-3 d-flex align-items-center">
-                <label class="form-label flex-grow-1">Kỹ năng cá nhân</label>
-                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableSkillEdit(this)" title="Edit">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
-                </button>
-            </div>
-            <div class="mb-3" id="skills-section">
-                <div id="skills-list" style="pointer-events: none; opacity: 0.6;">
-                    <c:forEach var="skill" items="${userSkills}">
-                        <div class="skill-row d-flex align-items-center mb-2">
-                            <input type="text" name="skillName" class="form-control me-2" value="${skill.skillName}" placeholder="Tên kỹ năng" style="flex: 2;" readonly>
-                            <input type="number" name="skillScore" class="form-control me-2" value="${skill.score}" min="0" max="100" placeholder="Điểm (0-100)" style="flex: 1;" readonly>
-                            <button type="button" class="btn btn-link p-0" onclick="removeSkillRow(this)" disabled>Remove</button>
-                        </div>
-                    </c:forEach>
-                </div>
-                <button type="button" class="btn btn-link" onclick="addSkillRow()" disabled>+ Thêm kỹ năng</button>
-            </div>
             <div class="text-center">
                 <button type="submit" class="btn btn-primary mt-2">Update</button>
             </div>
@@ -278,6 +345,8 @@
         <script>
             function enableEdit(btn, fieldId) {
                 var input = document.getElementById(fieldId);
+                var fieldDisplay = document.getElementById(fieldId + '-display');
+                
                 if (input) {
                     input.removeAttribute('readonly');
                     if (input.type === 'date') {
@@ -285,40 +354,262 @@
                     }
                     input.focus();
                 }
+                
+                if (fieldDisplay) {
+                    fieldDisplay.style.pointerEvents = 'auto';
+                    fieldDisplay.style.opacity = '1';
+                }
+                
                 btn.disabled = true;
             }
 
-            let locationDebounceTimeout;
-            function checkLocationValid() {
-                clearTimeout(locationDebounceTimeout);
-                locationDebounceTimeout = setTimeout(() => {
-                    var locationInput = document.getElementById('location');
-                    var statusSpan = document.getElementById('location-status');
-                    var value = locationInput.value;
-                    if (!value || locationInput.readOnly) {
-                        statusSpan.innerHTML = '';
-                        return;
+            // Location selector functionality
+            let provincesData = [];
+            let currentProvince = null;
+            let currentDistrict = null;
+            let currentWard = null;
+
+            function enableLocationEdit(btn) {
+                var locationDisplay = document.getElementById('location-display');
+                var locationSelector = document.getElementById('location-selector');
+                
+                console.log('Enabling location edit...');
+                
+                // Show selector and hide display
+                locationDisplay.style.display = 'none';
+                locationSelector.style.display = 'block';
+                
+                // Load provinces data if not loaded
+                if (provincesData.length === 0) {
+                    loadProvincesData();
+                } else {
+                    populateProvinces();
+                }
+                
+                btn.disabled = true;
+                
+                // Debug: check if elements exist
+                setTimeout(() => {
+                    const provinceSelect = document.getElementById('province-select');
+                    const districtSelect = document.getElementById('district-select');
+                    const wardSelect = document.getElementById('ward-select');
+                    
+                    console.log('Province select:', provinceSelect);
+                    console.log('District select:', districtSelect);
+                    console.log('Ward select:', wardSelect);
+                    
+                    if (provinceSelect) {
+                        console.log('Province select options:', provinceSelect.options.length);
+                        console.log('Province select disabled:', provinceSelect.disabled);
                     }
-                    statusSpan.innerHTML = '<span style="color:gray;">Đang kiểm tra...</span>';
-                    fetch('SettingsServlet?action=checkLocation&location=' + encodeURIComponent(value))
-                        .then(res => {
-                            const contentType = res.headers.get('content-type');
-                            if (!contentType || !contentType.includes('application/json')) {
-                                throw new Error('Response is not JSON');
-                            }
-                            return res.json();
-                        })
-                        .then(data => {
-                            if (data && data.found === true) {
-                                statusSpan.innerHTML = '<span style="color:green;font-size:1.2em;">&#10003;</span>';
-                            } else {
-                                statusSpan.innerHTML = '<span style="color:red;font-size:1.2em;">&#10007;</span>';
-                            }
-                        })
-                        .catch(() => {
-                            statusSpan.innerHTML = '<span style="color:red;">Lỗi!</span>';
+                }, 100);
+            }
+
+            function loadProvincesData() {
+                console.log('Loading provinces data...');
+                fetch('${pageContext.request.contextPath}/js/provinces_districts.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Provinces data loaded:', data.length, 'provinces');
+                        provincesData = data;
+                        populateProvinces();
+                    })
+                    .catch(error => {
+                        console.error('Error loading provinces data:', error);
+                        // Fallback: create some sample data for testing
+                        provincesData = [
+                            {Id: "01", Name: "Thành phố Hà Nội", Districts: []},
+                            {Id: "02", Name: "Tỉnh Hà Giang", Districts: []},
+                            {Id: "04", Name: "Tỉnh Cao Bằng", Districts: []}
+                        ];
+                        populateProvinces();
+                    });
+            }
+
+            function populateProvinces() {
+                const provinceSelect = document.getElementById('province-select');
+                if (!provinceSelect) {
+                    console.error('Province select not found');
+                    return;
+                }
+                
+                provinceSelect.innerHTML = '<option value="">Chọn Tỉnh/Thành phố</option>';
+                
+                if (provincesData && provincesData.length > 0) {
+                    provincesData.forEach(province => {
+                        const option = document.createElement('option');
+                        option.value = province.Id;
+                        option.textContent = province.Name;
+                        option.style.color = '#1f2937';
+                        option.style.background = '#fff';
+                        provinceSelect.appendChild(option);
+                    });
+                } else {
+                    console.error('No provinces data available');
+                }
+                
+                provinceSelect.disabled = false;
+                console.log('Provinces populated:', provinceSelect.options.length);
+            }
+
+            function populateDistricts(provinceId) {
+                const districtSelect = document.getElementById('district-select');
+                const wardSelect = document.getElementById('ward-select');
+                
+                // Reset district and ward selects
+                districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+                wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+                districtSelect.disabled = true;
+                wardSelect.disabled = true;
+                
+                if (!provinceId) return;
+                
+                const province = provincesData.find(p => p.Id === provinceId);
+                if (province && province.Districts) {
+                    province.Districts.forEach(district => {
+                        const option = document.createElement('option');
+                        option.value = district.Id;
+                        option.textContent = district.Name;
+                        districtSelect.appendChild(option);
+                    });
+                    districtSelect.disabled = false;
+                }
+            }
+
+            function populateWards(districtId) {
+                const wardSelect = document.getElementById('ward-select');
+                wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+                
+                if (!districtId || !currentProvince) return;
+                
+                const province = provincesData.find(p => p.Id === currentProvince);
+                if (province && province.Districts) {
+                    const district = province.Districts.find(d => d.Id === districtId);
+                    if (district && district.Wards) {
+                        district.Wards.forEach(ward => {
+                            const option = document.createElement('option');
+                            option.value = ward.Id;
+                            option.textContent = ward.Name;
+                            wardSelect.appendChild(option);
                         });
-                }, 500);
+                        wardSelect.disabled = false;
+                    }
+                }
+            }
+
+            function updateLocationDisplay() {
+                const provinceSelect = document.getElementById('province-select');
+                const districtSelect = document.getElementById('district-select');
+                const wardSelect = document.getElementById('ward-select');
+                const locationInput = document.getElementById('location');
+                
+                const province = provinceSelect.options[provinceSelect.selectedIndex];
+                const district = districtSelect.options[districtSelect.selectedIndex];
+                const ward = wardSelect.options[wardSelect.selectedIndex];
+                
+                let locationText = '';
+                if (province && province.value) {
+                    locationText = province.textContent;
+                    if (district && district.value) {
+                        locationText += ', ' + district.textContent;
+                        if (ward && ward.value) {
+                            locationText += ', ' + ward.textContent;
+                        }
+                    }
+                }
+                
+                locationInput.value = locationText;
+            }
+
+            // Event listeners for location selects
+            document.addEventListener('DOMContentLoaded', function() {
+                const provinceSelect = document.getElementById('province-select');
+                const districtSelect = document.getElementById('district-select');
+                const wardSelect = document.getElementById('ward-select');
+                
+                if (provinceSelect) {
+                    provinceSelect.addEventListener('change', function() {
+                        currentProvince = this.value;
+                        populateDistricts(this.value);
+                        updateLocationDisplay();
+                    });
+                }
+                
+                if (districtSelect) {
+                    districtSelect.addEventListener('change', function() {
+                        currentDistrict = this.value;
+                        populateWards(this.value);
+                        updateLocationDisplay();
+                    });
+                }
+                
+                if (wardSelect) {
+                    wardSelect.addEventListener('change', function() {
+                        currentWard = this.value;
+                        updateLocationDisplay();
+                    });
+                }
+            });
+
+            function saveLocation() {
+                const locationInput = document.getElementById('location');
+                const locationDisplay = document.getElementById('location-display');
+                const locationSelector = document.getElementById('location-selector');
+                const editButton = document.querySelector('[onclick="enableLocationEdit(this)"]');
+                
+                // Validate that at least province is selected
+                const provinceSelect = document.getElementById('province-select');
+                if (!provinceSelect.value) {
+                    alert('Vui lòng chọn ít nhất một Tỉnh/Thành phố!');
+                    return;
+                }
+                
+                // Show success message
+                const updateMsg = document.getElementById('update-message');
+                updateMsg.innerHTML = '<div class="alert alert-success mt-3 text-center">Địa chỉ đã được cập nhật thành công!</div>';
+                
+                // Hide selector and show display
+                locationDisplay.style.display = 'block';
+                locationSelector.style.display = 'none';
+                
+                // Re-enable edit button
+                editButton.disabled = false;
+                
+                // Clear the form after a short delay
+                setTimeout(() => {
+                    updateMsg.innerHTML = '';
+                }, 3000);
+            }
+
+            function cancelLocationEdit() {
+                const locationDisplay = document.getElementById('location-display');
+                const locationSelector = document.getElementById('location-selector');
+                const editButton = document.querySelector('[onclick="enableLocationEdit(this)"]');
+                
+                // Reset selects to original state
+                const provinceSelect = document.getElementById('province-select');
+                const districtSelect = document.getElementById('district-select');
+                const wardSelect = document.getElementById('ward-select');
+                
+                provinceSelect.selectedIndex = 0;
+                districtSelect.selectedIndex = 0;
+                wardSelect.selectedIndex = 0;
+                
+                // Reset location input to original value
+                const locationInput = document.getElementById('location');
+                locationInput.value = '${user.location}';
+                
+                // Hide selector and show display
+                locationDisplay.style.display = 'block';
+                locationSelector.style.display = 'none';
+                
+                // Re-enable edit button
+                editButton.disabled = false;
             }
 
             function submitSettingsForm(event) {
@@ -353,45 +644,7 @@
                 return false;
             }
 
-            function addSkillRow() {
-                var container = document.getElementById('skills-list');
-                var div = document.createElement('div');
-                div.className = 'skill-row d-flex align-items-center mb-2';
-                div.innerHTML = `
-                    <input type="text" name="skillName" class="form-control me-2" placeholder="Tên kỹ năng" style="flex: 2;">
-                    <input type="number" name="skillScore" class="form-control me-2" min="0" max="100" placeholder="Điểm (0-100)" style="flex: 1;">
-                    <button type="button" class="btn btn-link p-0" onclick="removeSkillRow(this)">Remove</button>
-                `;
-                container.appendChild(div);
-            }
-            function removeSkillRow(btn) {
-                btn.parentElement.remove();
-            }
 
-            function enableSkillEdit(btn) {
-                var skillsSection = document.getElementById('skills-section');
-                var skillsList = document.getElementById('skills-list');
-                var addButton = skillsList.nextElementSibling;
-                
-                // Enable tất cả input và button
-                var inputs = skillsList.querySelectorAll('input');
-                inputs.forEach(function(input) {
-                    input.removeAttribute('readonly');
-                });
-                
-                var removeButtons = skillsList.querySelectorAll('button');
-                removeButtons.forEach(function(button) {
-                    button.disabled = false;
-                });
-                
-                addButton.disabled = false;
-                
-                // Enable pointer events và opacity
-                skillsList.style.pointerEvents = 'auto';
-                skillsList.style.opacity = '1';
-                
-                btn.disabled = true;
-            }
         </script>
     </div>
 </body>
