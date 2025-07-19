@@ -33,7 +33,7 @@ public class RecommendationDAO {
             ps.close();
 
             // B2: Lấy tất cả công việc
-            String getJobsSql = "SELECT id, title, company, location, environment, skill_required, recruiter_email FROM Jobs";
+            String getJobsSql = "SELECT id, title, company, location, environment, skill_required, recruiter_email, salary, experience FROM Jobs";
             ps = conn.prepareStatement(getJobsSql);
             rs = ps.executeQuery();
 
@@ -86,7 +86,7 @@ public class RecommendationDAO {
             psInsert.close();
 
             // B4: Truy vấn kết quả để hiển thị
-            String joinSql = "SELECT r.match_percent, j.id, j.title, j.company, j.location, j.environment, j.recruiter_email, j.description " +
+            String joinSql = "SELECT r.match_percent, j.id, j.title, j.company, j.location, j.environment, j.recruiter_email, j.description, j.salary, j.experience " +
                              "FROM JobRecommendations r JOIN Jobs j ON r.job_id = j.id " +
                              "WHERE r.user_id = ? ORDER BY r.match_percent DESC";
             ps = conn.prepareStatement(joinSql);
@@ -111,6 +111,8 @@ public class RecommendationDAO {
                 job.setEnvironment(rs.getString("environment"));
                 job.setRecruiterEmail(rs.getString("recruiter_email"));
                 job.setDescription(rs.getString("description")); // mapping description
+                job.setSalary(rs.getFloat("salary")); // mapping salary
+                job.setExperience(rs.getString("experience")); // mapping experience
 
                 rec.setJob(job);
                 recommendations.add(rec);

@@ -178,28 +178,144 @@
           border-radius: 1rem !important;
           background: #f8fafc !important;
         }
+        
+        /* Filter styles */
+        .filter-row {
+          display: flex;
+          gap: 1rem;
+          align-items: center;
+          flex-wrap: wrap;
+          margin-top: 1rem;
+        }
+        
+        .filter-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        
+        .filter-label {
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #374151;
+        }
+        
+        .filter-input {
+          padding: 0.6rem 1rem;
+          border: 1px solid #d1d5db;
+          border-radius: 0.75rem;
+          font-size: 0.95rem;
+          background: #f8fafc;
+          min-width: 120px;
+        }
+        
+        .filter-input:focus {
+          outline: none;
+          border-color: #2563eb;
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .clear-filters {
+          background: #f3f4f6;
+          color: #6b7280;
+          border: 1px solid #d1d5db;
+          padding: 0.6rem 1rem;
+          border-radius: 0.75rem;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        
+        .clear-filters:hover {
+          background: #e5e7eb;
+          color: #374151;
+        }
+        
+        @media (max-width: 768px) {
+          .filter-row {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          .filter-group {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+          }
+        }
     </style>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jobSuggestions.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" />
 </head>
 <body>
+<jsp:include page="/view/includes/navbar.jsp" />
+
 <div class="jobsearch-hero" style="background: linear-gradient(to right, #2563eb, #7c3aed); color: #fff; padding: 2rem 0 1rem 0; text-align: center;">
     <h2 style="margin:0;font-size:2rem;font-weight:600;">Khám phá việc làm phù hợp cho bạn</h2>
     <p style="color:#dbeafe;">Tìm kiếm và ứng tuyển công việc IT mơ ước!</p>
 </div>
-<!-- Thanh search sát đỉnh đầu -->
+
+<!-- Thanh search với bộ lọc nâng cao -->
 <div class="search-bar-wrap">
-  <form id="searchForm" action="JobRecommendationServlet" method="get" style="display:flex;gap:1.2rem;align-items:center;max-width:900px;width:100%;background:#fff;padding:0.9rem 1.5rem;border-radius:1.5rem;box-shadow:0 2px 12px #0001;">
-    <div class="input-address-group" style="position:relative;display:flex;align-items:center;flex:1;">
-      <input type="text" id="addressInput" name="location" placeholder="Tìm theo địa chỉ cụ thể..." style="flex:1;padding:0.8rem 2.2rem 0.8rem 1.1rem;border-radius:1rem;border:1px solid #d1d5db;font-size:1.08rem;background:#f8fafc;" autocomplete="off">
-      <span id="addressStatus" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;display:flex;align-items:center;justify-content:center;pointer-events:none;"></span>
+  <form id="searchForm" action="JobRecommendationServlet" method="get" style="display:flex;flex-direction:column;gap:1.2rem;max-width:1200px;width:100%;background:#fff;padding:1.5rem;border-radius:1.5rem;box-shadow:0 2px 12px #0001;">
+    <!-- Row 1: Search cơ bản -->
+    <div style="display:flex;gap:1.2rem;align-items:center;">
+      <div class="input-address-group" style="position:relative;display:flex;align-items:center;flex:1;">
+        <input type="text" id="addressInput" name="location" placeholder="Tìm theo địa chỉ cụ thể..." style="flex:1;padding:0.8rem 2.2rem 0.8rem 1.1rem;border-radius:1rem;border:1px solid #d1d5db;font-size:1.08rem;background:#f8fafc;" autocomplete="off" value="${param.location}">
+        <span id="addressStatus" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);width:28px;height:28px;display:flex;align-items:center;justify-content:center;pointer-events:none;"></span>
+      </div>
+      <select id="radiusSelect" name="radiusKm" style="padding:0.8rem 1.2rem;border-radius:1rem;border:1px solid #d1d5db;font-size:1.08rem;background:#f8fafc;">
+        <option value="5" ${param.radiusKm == '5' ? 'selected' : ''}>5 km</option>
+        <option value="10" ${param.radiusKm == '10' ? 'selected' : ''}>10 km</option>
+        <option value="15" ${param.radiusKm == '15' ? 'selected' : ''}>15 km</option>
+        <option value="20" ${param.radiusKm == '20' ? 'selected' : ''}>20 km</option>
+        <option value="50" ${param.radiusKm == '50' ? 'selected' : ''}>50 km</option>
+      </select>
+      <input type="text" name="title" placeholder="Tìm theo tiêu đề công việc..." style="flex:2;padding:0.8rem 1.1rem;border-radius:1rem;border:1px solid #d1d5db;font-size:1.08rem;background:#f8fafc;" value="${param.title}">
+      <button id="searchBtn" type="submit" style="margin-left:1.2rem;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#fff;padding:0.9rem 2.5rem;border:none;border-radius:1.2rem;font-weight:700;font-size:1.13rem;box-shadow:0 2px 8px #0001;cursor:pointer;transition:background 0.2s;">Tìm kiếm</button>
     </div>
-    <select id="radiusSelect" name="radiusKm" style="padding:0.8rem 1.2rem;border-radius:1rem;border:1px solid #d1d5db;font-size:1.08rem;background:#f8fafc;">
-      <option value="5">5 km</option>
-      <option value="10">10 km</option>
-      <option value="15">15 km</option>
-    </select>
-    <input type="text" name="title" placeholder="Tìm theo tiêu đề công việc..." style="flex:2;padding:0.8rem 1.1rem;border-radius:1rem;border:1px solid #d1d5db;font-size:1.08rem;background:#f8fafc;">
-    <button id="searchBtn" type="submit" style="margin-left:1.2rem;background:linear-gradient(90deg,#2563eb,#7c3aed);color:#fff;padding:0.9rem 2.5rem;border:none;border-radius:1.2rem;font-weight:700;font-size:1.13rem;box-shadow:0 2px 8px #0001;cursor:pointer;transition:background 0.2s;">Tìm kiếm</button>
+    
+    <!-- Row 2: Bộ lọc nâng cao -->
+    <div class="filter-row">
+      <!-- Kinh nghiệm -->
+      <div class="filter-group">
+        <label class="filter-label">Kinh nghiệm (năm)</label>
+        <select name="experience" class="filter-input">
+          <option value="">Tất cả</option>
+          <option value="0-1" ${param.experience == '0-1' ? 'selected' : ''}>0-1 năm</option>
+          <option value="1-3" ${param.experience == '1-3' ? 'selected' : ''}>1-3 năm</option>
+          <option value="3-5" ${param.experience == '3-5' ? 'selected' : ''}>3-5 năm</option>
+          <option value="5-7" ${param.experience == '5-7' ? 'selected' : ''}>5-7 năm</option>
+          <option value="7+" ${param.experience == '7+' ? 'selected' : ''}>7+ năm</option>
+        </select>
+      </div>
+      
+      <!-- Mức lương tối thiểu -->
+      <div class="filter-group">
+        <label class="filter-label">Lương tối thiểu (triệu)</label>
+        <input type="number" name="minSalary" placeholder="0" min="0" step="0.5" class="filter-input" value="${param.minSalary}">
+      </div>
+      
+      <!-- Mức lương tối đa -->
+      <div class="filter-group">
+        <label class="filter-label">Lương tối đa (triệu)</label>
+        <input type="number" name="maxSalary" placeholder="Không giới hạn" min="0" step="0.5" class="filter-input" value="${param.maxSalary}">
+      </div>
+      
+      <!-- Môi trường làm việc -->
+      <div class="filter-group">
+        <label class="filter-label">Môi trường</label>
+        <select name="workEnvironment" class="filter-input">
+          <option value="">Tất cả</option>
+          <option value="Onsite" ${param.workEnvironment == 'Onsite' ? 'selected' : ''}>Onsite (Tại văn phòng)</option>
+          <option value="Remote" ${param.workEnvironment == 'Remote' ? 'selected' : ''}>Remote (Từ xa)</option>
+          <option value="Hybrid" ${param.workEnvironment == 'Hybrid' ? 'selected' : ''}>Hybrid (Kết hợp)</option>
+        </select>
+      </div>
+      
+      <!-- Nút xóa bộ lọc -->
+      <button type="button" class="clear-filters" onclick="clearFilters()">Xóa bộ lọc</button>
+    </div>
   </form>
 </div>
 <div class="container" style="max-width:1200px;margin:0 auto;">
@@ -215,7 +331,7 @@
                     <div style="flex:1;">
                         <div class="job-title" style="font-size:1.1rem;font-weight:600;color:#2563eb;">${rec.job.title}</div>
                         <div style="color:#64748b;font-size:0.97rem;">${rec.job.company}</div>
-                        <div style="display:flex;gap:0.5rem;margin:0.5rem 0 0.2rem 0;align-items:center;flex-wrap:wrap;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin:0.5rem 0 0.2rem 0;align-items:center;">
                             <c:if test="${rec.job.salary > 0}">
                                 <span style="background:#bbf7d0;color:#22c55e;padding:2px 12px;border-radius:8px;font-size:1rem;font-weight:600;">
                                     <c:choose>
@@ -250,7 +366,7 @@
                     <div id="job-desc-${rec.job.id}" style="display:none;">
                         <h2 style="margin:0 0 0.5rem 0;font-size:1.3rem;color:#2563eb;">${rec.job.title}</h2>
                         <div style="color:#64748b;font-size:1.05rem;margin-bottom:0.5rem;">${rec.job.company}</div>
-                        <div style="display:flex;gap:0.7rem;margin-bottom:0.7rem;align-items:center;flex-wrap:wrap;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem;align-items:center;">
                             <c:if test="${rec.job.salary > 0}">
                                 <span style="background:#bbf7d0;color:#22c55e;padding:2px 12px;border-radius:8px;font-size:1rem;font-weight:600;">
                                     <c:choose>
@@ -272,6 +388,17 @@
                             </c:if>
                             <c:if test="${not empty rec.job.experience}">
                                 <span style="background:#ede9fe;color:#a21caf;padding:2px 12px;border-radius:8px;font-size:1rem;">${rec.job.experience}</span>
+                            </c:if>
+                            <c:if test="${not empty rec.job.environment}">
+                                <span style="background:#fef3c7;color:#92400e;padding:2px 12px;border-radius:8px;font-size:1rem;">
+                                    <i data-lucide='monitor' style='width:12px;margin-right:3px;'></i>${rec.job.environment}
+                                </span>
+                            </c:if>
+                            <!-- Debug info -->
+                            <c:if test="${param.debug == 'true'}">
+                                <span style="background:#fee2e2;color:#991b1b;padding:2px 12px;border-radius:8px;font-size:0.8rem;">
+                                    DEBUG: '${rec.job.environment}'
+                                </span>
                             </c:if>
                         </div>
                         <div class="match-info" style="margin-bottom:0.7rem;">Phù hợp: ${rec.matchPercent}% <c:if test="${not empty rec.matchDetail}"> - ${rec.matchDetail}</c:if></div>
@@ -464,6 +591,30 @@ Trân trọng,
             return false;
         }
     };
+
+    // Hàm xóa bộ lọc
+    function clearFilters() {
+        // Reset form
+        document.getElementById('searchForm').reset();
+        
+        // Reset các select về giá trị mặc định
+        document.getElementById('radiusSelect').value = '5';
+        
+        // Reset các input về rỗng
+        const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+        inputs.forEach(input => {
+            input.value = '';
+        });
+        
+        // Reset các select về "Tất cả"
+        const selects = document.querySelectorAll('select[name="experience"], select[name="workEnvironment"]');
+        selects.forEach(select => {
+            select.value = '';
+        });
+        
+        // Submit form để áp dụng filter mới
+        document.getElementById('searchForm').submit();
+    }
 </script>
 </body>
 </html>

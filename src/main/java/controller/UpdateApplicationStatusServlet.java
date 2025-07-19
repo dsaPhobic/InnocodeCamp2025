@@ -1,4 +1,3 @@
-// File: src/main/java/controller/DeleteApplicationServlet.java
 package controller;
 
 import dao.JobApplicationDAO;
@@ -8,8 +7,8 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import model.User;
 
-@WebServlet(name = "DeleteApplicationServlet", urlPatterns = {"/DeleteApplicationServlet"})
-public class DeleteApplicationServlet extends HttpServlet {
+@WebServlet(name = "UpdateApplicationStatusServlet", urlPatterns = {"/UpdateApplicationStatusServlet"})
+public class UpdateApplicationStatusServlet extends HttpServlet {
     private JobApplicationDAO applicationDAO;
     
     @Override
@@ -29,9 +28,26 @@ public class DeleteApplicationServlet extends HttpServlet {
         
         User user = (User) session.getAttribute("user");
         String jobIdStr = request.getParameter("jobId");
+        String newStatus = request.getParameter("status");
         
-        if (jobIdStr == null || jobIdStr.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Job ID is required");
+        if (jobIdStr == null || jobIdStr.trim().isEmpty() || 
+            newStatus == null || newStatus.trim().isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Job ID and status are required");
+            return;
+        }
+        
+        // Validate status
+        String[] validStatuses = {"Applied", "Pending", "Accepted", "Rejected"};
+        boolean validStatus = false;
+        for (String status : validStatuses) {
+            if (status.equals(newStatus)) {
+                validStatus = true;
+                break;
+            }
+        }
+        
+        if (!validStatus) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid status");
             return;
         }
         
@@ -39,13 +55,13 @@ public class DeleteApplicationServlet extends HttpServlet {
             int jobId = Integer.parseInt(jobIdStr);
             int userId = user.getId();
             
-            // Kiểm tra xem ứng tuyển có tồn tại và thuộc về user này không
-            boolean success = applicationDAO.deleteApplication(userId, jobId);
+            // Cập nhật status
+            boolean success = applicationDAO.updateApplicationStatus(userId, jobId, newStatus);
             
             if (success) {
                 response.getWriter().write("success");
             } else {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Application not found or cannot be deleted");
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Application not found or cannot be updated");
             }
             
         } catch (NumberFormatException e) {

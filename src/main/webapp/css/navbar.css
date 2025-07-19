@@ -46,6 +46,33 @@
     color: #7c3aed;
     transform: scale(1.08) translateY(-2px);
 }
+
+/* Active state for navigation links */
+.navbar-links a.active {
+    color: #7c3aed;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e6f0ff 100%);
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    position: relative;
+}
+
+.navbar-links a.active::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    border-radius: 2px;
+}
+
+.navbar-links a.active:hover {
+    transform: scale(1.05) translateY(-1px);
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+}
 .navbar-user {
     position: relative;
 }
