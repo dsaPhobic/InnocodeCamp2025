@@ -15,11 +15,16 @@ public class UserDAO {
 
     public static boolean updateUser(User user) {
         try (java.sql.Connection conn = DBConnection.getConnection()) {
-            String sql = "UPDATE users SET fullname=?, email=? WHERE id=?";
+            String sql = "UPDATE users SET fullname=?, email=?, password=?, description=?, gender=?, location=?, date_of_birth=? WHERE id=?";
             java.sql.PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, user.getFullname());
             ps.setString(2, user.getEmail());
-            ps.setInt(3, user.getId());
+            ps.setString(3, user.getPassword());
+            ps.setString(4, user.getDescription());
+            ps.setString(5, user.getGender());
+            ps.setString(6, user.getLocation());
+            ps.setDate(7, user.getDateOfBirth());
+            ps.setInt(8, user.getId());
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (Exception e) {
@@ -123,6 +128,8 @@ public class UserDAO {
         user.setDescription(rs.getString("description"));
         user.setRole(rs.getString("role"));
         user.setGender(rs.getString("gender"));
+        user.setLocation(rs.getString("location"));
+        user.setDateOfBirth(rs.getDate("date_of_birth"));
         return user;
     }
 }

@@ -54,6 +54,30 @@ public class LocationService {
         }
     }
 
+    public boolean isAddressFound(String address) {
+        try {
+            String encodedAddress = URLEncoder.encode(address, "UTF-8");
+            String urlStr = NOMINATIM_URL + "?q=" + encodedAddress + "&format=json&limit=1";
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Java NominatimService)");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder jsonResult = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonResult.append(line);
+            }
+            reader.close();
+            Gson gson = new Gson();
+            JsonArray results = gson.fromJson(jsonResult.toString(), JsonArray.class);
+            return results.size() > 0;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     public static boolean isWithinRadius(String gpscv, String gpsjd, double radiusKm) {
         try {
@@ -83,4 +107,12 @@ public class LocationService {
         return R * c;
     }
 
+    public static void main(String[] args) {
+        LocationService service = new LocationService();
+        String testAddress = "Đà Nẵng";
+        boolean found = service.isAddressFound(testAddress);
+        System.out.println("Address found: " + found);
+        String coords = service.getCoordinatesFromAddress(testAddress);
+        System.out.println("Coordinates: " + coords);
+    }
 }

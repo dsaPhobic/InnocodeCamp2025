@@ -40,6 +40,7 @@
                         <div class="user-email">${sessionScope.user.email}</div>
                     </div>
                 </div>
+                <a href="${pageContext.request.contextPath}/view/userPortfolio.jsp"><i data-lucide="folder"></i> Portfolio cá nhân</a>
                 <a href="${pageContext.request.contextPath}/SettingsServlet"><i data-lucide="user"></i> H? s? c?a b?n</a>
                 <hr>
                 <a href="${pageContext.request.contextPath}/LogoutServlet" class="logout"><i data-lucide="log-out"></i>??ng Xu?t</a>

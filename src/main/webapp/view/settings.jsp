@@ -7,68 +7,392 @@
 <head>
     <title>User Settings</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Home.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css" />
     <style>
         body {
-            background: linear-gradient(135deg, var(--pale-pink, #FCECEC) 0%, #fff5f5 50%, var(--pale-pink, #FCECEC) 100%);
-            font-family: 'ADLaM Display', sans-serif;
+            background: #f3f4f6;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 1.7rem;
         }
         .settings-container {
-            max-width: 420px;
+            max-width: 540px;
             margin: 60px auto 0 auto;
             background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 6px 32px rgba(127,85,177,0.10);
+            border-radius: 1rem;
+            box-shadow: 0 2px 8px 0 rgba(16, 30, 54, 0.08), 0 1.5px 4px 0 rgba(16, 30, 54, 0.04);
             padding: 36px 32px 28px 32px;
         }
         h2 {
-            color: var(--highlight-text, #7F55B1);
-            font-weight: 900;
+            color: #2563eb;
+            font-weight: 800;
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
+            letter-spacing: 1px;
+            font-size: 3.2rem;
         }
         .form-label {
-            color: var(--primary-text, #4B3B60);
+            color: #334155;
             font-weight: 600;
+            font-size: 1.7rem;
+        }
+        .form-control {
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+            font-size: 1.55rem;
+            background: #f9fafb;
+            color: #222;
+            margin-bottom: 0.7rem;
+            transition: border 0.2s, box-shadow 0.2s;
+            padding: 1.2rem 1.4rem;
+        }
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px #2563eb22;
+            background: #fff;
         }
         .btn-primary {
-            background: linear-gradient(90deg, var(--deep-purple, #7F55B1), var(--soft-purple, #9D80BE));
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
             border: none;
             font-weight: 700;
-            border-radius: 20px;
-            padding: 10px 28px;
+            border-radius: 1.5rem;
+            padding: 18px 40px;
             transition: background 0.2s, transform 0.2s;
+            font-size: 1.7rem;
         }
         .btn-primary:hover {
-            background: linear-gradient(90deg, var(--soft-purple, #9D80BE), var(--deep-purple, #7F55B1));
+            background: linear-gradient(90deg, #7c3aed, #2563eb);
             transform: translateY(-2px) scale(1.03);
         }
-        .alert-info {
-            border-radius: 12px;
+        .btn-link {
+            color: #7c3aed;
             font-weight: 600;
-            color: var(--deep-purple, #7F55B1);
-            background: var(--pale-pink, #FCECEC);
-            border: 1px solid var(--soft-pink, #E4A4AF);
+            font-size: 1.25rem;
+            text-decoration: none;
+            border: none;
+            background: none;
+            padding: 0 0.5rem;
+            transition: color 0.2s;
+            margin-left: auto;
+        }
+        .btn-link:disabled {
+            color: #cbd5e1;
+            text-decoration: none;
+        }
+        .btn-link:hover:not(:disabled) {
+            color: #2563eb;
+        }
+        .alert-info {
+            border-radius: 0.75rem;
+            font-weight: 600;
+            color: #2563eb;
+            background: #eff6ff;
+            border: 1px solid #dbeafe;
+            font-size: 2.1rem;
+            padding: 1.1rem 1.5rem;
+        }
+        #location-status {
+            min-width: 1.5em;
+            display: inline-block;
+            margin-left: 0.75rem;
+            margin-right: 0;
+        }
+        .mb-3.d-flex.align-items-center {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .edit-icon-btn svg {
+            vertical-align: middle;
+            pointer-events: none;
+        }
+        .edit-icon-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            margin-left: auto;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .skill-list-box {
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem 1.2rem 0.5rem 1.2rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e0e7ef;
+        }
+        .skill-card {
+            background: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 4px 0 #e0e7ef;
+            padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .skill-input {
+            max-width: 55%;
+        }
+        .score-input {
+            max-width: 25%;
+        }
+        .skill-remove-btn {
+            min-width: 40px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-outline-primary {
+            border: 1.5px solid #2563eb;
+            color: #2563eb;
+            background: #fff;
+            font-weight: 600;
+            border-radius: 1.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-outline-primary:hover {
+            background: #2563eb;
+            color: #fff;
+        }
+        .btn-outline-danger {
+            border: 1.5px solid #ef4444;
+            color: #ef4444;
+            background: #fff;
+            font-weight: 600;
+            border-radius: 1.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .btn-outline-danger:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+        .skill-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        .skill-row input {
+            margin: 0;
         }
     </style>
 </head>
 <body>
     <div class="settings-container">
         <h2>User Settings</h2>
-        <form action="SettingsServlet" method="post">
-            <div class="mb-3">
-                <label class="form-label">Full Name</label>
-                <input type="text" name="fullName" class="form-control" value="${user.fullname}" required>
+        <form action="SettingsServlet" method="post" id="settingsForm" onsubmit="return submitSettingsForm(event)">
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Full Name</label>
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'fullName')" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
+                </button>
             </div>
             <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" value="${user.email}" required>
+                <input type="text" id="fullName" name="fullName" class="form-control" value="${user.fullname}" readonly required>
             </div>
-            <button type="submit" class="btn btn-primary w-100 mt-2">Update</button>
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Description</label>
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'description')" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
+                </button>
+            </div>
+            <div class="mb-3">
+                <textarea id="description" name="description" class="form-control" rows="2" readonly>${user.description}</textarea>
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Gender</label>
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'gender')" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
+                </button>
+            </div>
+            <div class="mb-3">
+                <input type="text" id="gender" name="gender" class="form-control" value="${user.gender}" readonly>
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Location</label>
+                <span id="location-status" style="margin-left:8px;"></span>
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'location')" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
+                </button>
+            </div>
+            <div class="mb-3">
+                <input type="text" id="location" name="location" class="form-control" value="${user.location}" readonly oninput="checkLocationValid()">
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Date of Birth</label>
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'dateOfBirth')" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
+                </button>
+            </div>
+            <div class="mb-3">
+                <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control" value="${user.dateOfBirth}" readonly required onkeydown="return false;">
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Password</label>
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'password')" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
+                </button>
+            </div>
+            <div class="mb-3">
+                <input type="password" id="password" name="password" class="form-control" value="${user.password}" readonly required>
+            </div>
+            <!-- Các trường không cho chỉnh sửa đưa xuống cuối -->
+            <div class="mb-3">
+                <label class="form-label">User ID</label>
+                <input type="text" class="form-control" value="${user.id}" readonly>
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Email</label>
+            </div>
+            <div class="mb-3">
+                <input type="email" id="email" name="email" class="form-control" value="${user.email}" readonly required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Role</label>
+                <input type="text" class="form-control" value="${user.role}" readonly>
+            </div>
+            <div class="mb-3 d-flex align-items-center">
+                <label class="form-label flex-grow-1">Kỹ năng cá nhân</label>
+                <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableSkillEdit(this)" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
+                </button>
+            </div>
+            <div class="mb-3" id="skills-section">
+                <div id="skills-list" style="pointer-events: none; opacity: 0.6;">
+                    <c:forEach var="skill" items="${userSkills}">
+                        <div class="skill-row d-flex align-items-center mb-2">
+                            <input type="text" name="skillName" class="form-control me-2" value="${skill.skillName}" placeholder="Tên kỹ năng" style="flex: 2;" readonly>
+                            <input type="number" name="skillScore" class="form-control me-2" value="${skill.score}" min="0" max="100" placeholder="Điểm (0-100)" style="flex: 1;" readonly>
+                            <button type="button" class="btn btn-link p-0" onclick="removeSkillRow(this)" disabled>Remove</button>
+                        </div>
+                    </c:forEach>
+                </div>
+                <button type="button" class="btn btn-link" onclick="addSkillRow()" disabled>+ Thêm kỹ năng</button>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mt-2">Update</button>
+            </div>
         </form>
-        <c:if test="${not empty message}">
-            <div class="alert alert-info mt-3 text-center">${message}</div>
-        </c:if>
+        <div id="update-message"></div>
+        <script>
+            function enableEdit(btn, fieldId) {
+                var input = document.getElementById(fieldId);
+                if (input) {
+                    input.removeAttribute('readonly');
+                    if (input.type === 'date') {
+                        input.onkeydown = null;
+                    }
+                    input.focus();
+                }
+                btn.disabled = true;
+            }
+
+            let locationDebounceTimeout;
+            function checkLocationValid() {
+                clearTimeout(locationDebounceTimeout);
+                locationDebounceTimeout = setTimeout(() => {
+                    var locationInput = document.getElementById('location');
+                    var statusSpan = document.getElementById('location-status');
+                    var value = locationInput.value;
+                    if (!value || locationInput.readOnly) {
+                        statusSpan.innerHTML = '';
+                        return;
+                    }
+                    statusSpan.innerHTML = '<span style="color:gray;">Đang kiểm tra...</span>';
+                    fetch('SettingsServlet?action=checkLocation&location=' + encodeURIComponent(value))
+                        .then(res => {
+                            const contentType = res.headers.get('content-type');
+                            if (!contentType || !contentType.includes('application/json')) {
+                                throw new Error('Response is not JSON');
+                            }
+                            return res.json();
+                        })
+                        .then(data => {
+                            if (data && data.found === true) {
+                                statusSpan.innerHTML = '<span style="color:green;font-size:1.2em;">&#10003;</span>';
+                            } else {
+                                statusSpan.innerHTML = '<span style="color:red;font-size:1.2em;">&#10007;</span>';
+                            }
+                        })
+                        .catch(() => {
+                            statusSpan.innerHTML = '<span style="color:red;">Lỗi!</span>';
+                        });
+                }, 500);
+            }
+
+            function submitSettingsForm(event) {
+                event.preventDefault();
+                var form = document.getElementById('settingsForm');
+                var formData = new FormData(form);
+                var params = new URLSearchParams();
+                for (const [key, value] of formData.entries()) {
+                    params.append(key, value);
+                }
+                fetch('SettingsServlet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString()
+                })
+                .then(res => res.text())
+                .then(html => {
+                    // Lấy message từ response (nếu có)
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(html, 'text/html');
+                    var msg = doc.querySelector('.alert-info');
+                    var updateMsg = document.getElementById('update-message');
+                    if (msg) {
+                        updateMsg.innerHTML = msg.outerHTML;
+                    } else {
+                        updateMsg.innerHTML = '<div class="alert alert-info mt-3 text-center">Cập nhật thành công!</div>';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('update-message').innerHTML = '<div class="alert alert-info mt-3 text-center">Cập nhật thất bại!</div>';
+                });
+                return false;
+            }
+
+            function addSkillRow() {
+                var container = document.getElementById('skills-list');
+                var div = document.createElement('div');
+                div.className = 'skill-row d-flex align-items-center mb-2';
+                div.innerHTML = `
+                    <input type="text" name="skillName" class="form-control me-2" placeholder="Tên kỹ năng" style="flex: 2;">
+                    <input type="number" name="skillScore" class="form-control me-2" min="0" max="100" placeholder="Điểm (0-100)" style="flex: 1;">
+                    <button type="button" class="btn btn-link p-0" onclick="removeSkillRow(this)">Remove</button>
+                `;
+                container.appendChild(div);
+            }
+            function removeSkillRow(btn) {
+                btn.parentElement.remove();
+            }
+
+            function enableSkillEdit(btn) {
+                var skillsSection = document.getElementById('skills-section');
+                var skillsList = document.getElementById('skills-list');
+                var addButton = skillsList.nextElementSibling;
+                
+                // Enable tất cả input và button
+                var inputs = skillsList.querySelectorAll('input');
+                inputs.forEach(function(input) {
+                    input.removeAttribute('readonly');
+                });
+                
+                var removeButtons = skillsList.querySelectorAll('button');
+                removeButtons.forEach(function(button) {
+                    button.disabled = false;
+                });
+                
+                addButton.disabled = false;
+                
+                // Enable pointer events và opacity
+                skillsList.style.pointerEvents = 'auto';
+                skillsList.style.opacity = '1';
+                
+                btn.disabled = true;
+            }
+        </script>
     </div>
 </body>
 </html> 
