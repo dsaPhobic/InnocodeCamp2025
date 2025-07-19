@@ -27,10 +27,10 @@
             <div class="seaweed seaweed-left"></div>
             <div class="seaweed seaweed-right"></div>
         </div>
-        <!-- Header with IELTS branding -->
+        <!-- Header with  branding -->
         <header class="signup-header">
             <span class="ielts-icon"><i class="fa fa-graduation-cap"></i></span>
-            <span class="ielts-logo">IELTS</span>
+            <span class="ielts-logo">GolbalWork</span>
             <span class="ielts-icon"><i class="fa fa-book"></i></span>
         </header>
         <!-- Glassy Bubble Form -->

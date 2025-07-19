@@ -1,4 +1,5 @@
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -13,8 +14,8 @@
         <div class="container-fluid">
             <div class="row full-height">
                 <div class="col-md-5 left">
-                    <img src="${pageContext.request.contextPath}/Sources/LoginSources/real_back.jpg" alt="alt"/>
                     <h3 class="left_first_prompt">Start New Journey!</h3>
+                    <div class="decorative-element"></div>
                     <p class="left_second_prompt">You don't have an account yet?</p>
                     <form action="${pageContext.request.contextPath}/view/register.jsp" method="get">
                         <input type="submit" value="Sign Up" id="signUp"/>
@@ -60,6 +61,12 @@
                             <label for="rememberMe" style="margin: 0;">Remember Me</label>
                         </div>
                         <!-- FORGOT PASSWORD LINK -->
+                        <div class="forgot-password-container" style="text-align: center; margin-top: 10px;">
+                            <a href="${pageContext.request.contextPath}/view/forgot-password.jsp" 
+                               style="color: #007bff; text-decoration: none; font-size: 14px;">
+                                Forgot Password?
+                            </a>
+                        </div>
 
                         <br>
                         <button type="submit" class="signIn-btn">Sign In</button>

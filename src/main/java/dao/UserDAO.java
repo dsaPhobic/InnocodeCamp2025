@@ -132,4 +132,58 @@ public class UserDAO {
         user.setDateOfBirth(rs.getDate("date_of_birth"));
         return user;
     }
+    
+    // Method to find user by email (for forgot password)
+    public User findByEmail(String email) {
+        return getUserByEmail(email);
+    }
+    
+    // Method to save reset token for password reset
+    public boolean saveResetToken(String email, String token) {
+        String sql = "UPDATE Users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, token);
+            // Set expiry to 1 hour from now
+            java.sql.Timestamp expiry = new java.sql.Timestamp(System.currentTimeMillis() + (60 * 60 * 1000));
+            ps.setTimestamp(2, expiry);
+            ps.setString(3, email);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    // Method to update password by token
+    public boolean updatePasswordByToken(String token, String newPassword) {
+        String sql = "UPDATE Users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE reset_token = ? AND reset_token_expiry > GETDATE()";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, newPassword);
+            ps.setString(2, token);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    // Method to check if token is valid and not expired
+    public boolean isTokenValid(String token) {
+        String sql = "SELECT COUNT(*) FROM Users WHERE reset_token = ? AND reset_token_expiry > GETDATE()";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, token);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
