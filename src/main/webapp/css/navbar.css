@@ -40,9 +40,11 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    transition: color 0.25s, transform 0.2s;
 }
 .navbar-links a:hover {
-    color: #2563eb;
+    color: #7c3aed;
+    transform: scale(1.08) translateY(-2px);
 }
 .navbar-user {
     position: relative;
@@ -51,10 +53,11 @@
     cursor: pointer;
     padding: 6px;
     border-radius: 9999px;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s;
 }
 .user-icon:hover {
     background: #f3f4f6;
+    transform: scale(1.1) rotate(-6deg);
 }
 .user-menu {
     position: absolute;
@@ -65,6 +68,14 @@
     box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     width: 240px;
     padding: 1rem;
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 1;
+    transform: translateY(0);
+}
+.user-menu.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
 }
 .user-menu a {
     display: flex;
@@ -103,4 +114,18 @@
 }
 .hidden {
     display: none;
+}
+
+/* Animated SVG Logo */
+.animated-logo {
+    margin-right: 0.5rem;
+    display: inline-block;
+    vertical-align: middle;
+}
+.animated-logo circle {
+    filter: drop-shadow(0 2px 8px #2563eb22);
+    transition: filter 0.3s;
+}
+.animated-logo:hover circle {
+    filter: drop-shadow(0 4px 16px #7c3aed44);
 }

@@ -138,7 +138,8 @@ public class LLMService {
             converted.add(new Message(cm.getRole(), cm.getContent()));
         }
         return getResponse(converted);
-    } 
+    }
+
     public static void main(String[] args) {
         try {
             String testPrompt = "You are a strict JSON generator.\n"

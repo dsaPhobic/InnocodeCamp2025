@@ -9,14 +9,37 @@ public class SkillDAO {
 
     // Lưu danh sách kỹ năng vào bảng Skills
     public void saveSkills(int userId, List<Skill> skills) {
-        String sql = "INSERT INTO Skills (user_id, skill_name, score) VALUES (?, ?, ?)";
+        for (Skill s : skills) {
+            upsertSkill(userId, s);
+        }
+    }
+
+    // Thêm mới hoặc cập nhật điểm kỹ năng nếu đã tồn tại
+    public void upsertSkill(int userId, Skill skill) {
+        String checkSql = "SELECT COUNT(*) FROM Skills WHERE user_id = ? AND skill_name = ?";
+        String insertSql = "INSERT INTO Skills (user_id, skill_name, score) VALUES (?, ?, ?)";
+        String updateSql = "UPDATE Skills SET score = ? WHERE user_id = ? AND skill_name = ?";
         try (Connection conn = DBConnection.getConnection()) {
-            for (Skill s : skills) {
-                try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setInt(1, userId);
-                    ps.setString(2, s.getSkillName());
-                    ps.setInt(3, s.getScore());
-                    ps.executeUpdate();
+            try (PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
+                checkPs.setInt(1, userId);
+                checkPs.setString(2, skill.getSkillName());
+                ResultSet rs = checkPs.executeQuery();
+                if (rs.next() && rs.getInt(1) > 0) {
+                    // Đã có, update
+                    try (PreparedStatement updatePs = conn.prepareStatement(updateSql)) {
+                        updatePs.setInt(1, skill.getScore());
+                        updatePs.setInt(2, userId);
+                        updatePs.setString(3, skill.getSkillName());
+                        updatePs.executeUpdate();
+                    }
+                } else {
+                    // Chưa có, insert
+                    try (PreparedStatement insertPs = conn.prepareStatement(insertSql)) {
+                        insertPs.setInt(1, userId);
+                        insertPs.setString(2, skill.getSkillName());
+                        insertPs.setInt(3, skill.getScore());
+                        insertPs.executeUpdate();
+                    }
                 }
             }
         } catch (Exception e) {

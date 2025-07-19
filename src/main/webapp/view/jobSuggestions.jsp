@@ -179,6 +179,7 @@
           background: #f8fafc !important;
         }
     </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jobSuggestions.css" />
 </head>
 <body>
 <div class="jobsearch-hero" style="background: linear-gradient(to right, #2563eb, #7c3aed); color: #fff; padding: 2rem 0 1rem 0; text-align: center;">
