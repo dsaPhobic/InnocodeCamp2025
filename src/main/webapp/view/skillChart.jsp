@@ -92,11 +92,11 @@
             <canvas id="radarChart" width="400" height="400"></canvas>
         </div>
         <script>
-        const skillLabels = <%= jsSkillLabels%>;
-        const skillScores = <%= jsSkillScores%>;
-        window.onload = function () {
-            renderRadarChart(skillLabels, skillScores);
-        }
+            const skillLabels = <%= jsSkillLabels%>;
+            const skillScores = <%= jsSkillScores%>;
+            window.onload = function () {
+                renderRadarChart(skillLabels, skillScores);
+            }
         </script>
     </body>
 </html>
