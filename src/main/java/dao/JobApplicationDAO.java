@@ -122,4 +122,26 @@ public class JobApplicationDAO {
             DBConnection.closeConnection(conn);
         }
     }
+
+    // Cập nhật status của application
+    public boolean updateApplicationStatus(int userId, int jobId, String newStatus) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DBConnection.getConnection();
+            String sql = "UPDATE JobApplications SET status = ? WHERE user_id = ? AND job_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, newStatus);
+            ps.setInt(2, userId);
+            ps.setInt(3, jobId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { if (ps != null) ps.close(); } catch (SQLException ignored) {}
+            DBConnection.closeConnection(conn);
+        }
+    }
 }

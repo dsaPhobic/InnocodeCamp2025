@@ -21,12 +21,12 @@
             <span class="navbar-brand">InnocodeCamp</span>
         </div>
         <nav class="navbar-links">
-            <a href="${pageContext.request.contextPath}/HomeServlet"><i data-lucide="home"></i> Home</a>
-            <a href="${pageContext.request.contextPath}/view/inputDescription.jsp"><i data-lucide="upload"></i> Skills Analysis</a>
-            <a href="jobSuggestions.jsp"><i data-lucide="search"></i> Job Recommendations</a>
-            <a href="/SkillChartServlet"><i data-lucide="bar-chart-3"></i> Skills Chart</a>
-            <a href="jobApplications.jsp"><i data-lucide="briefcase"></i> My Applications</a>
-            <a href="chatbot.jsp"><i data-lucide="message-square"></i> Career Chatbot</a>
+            <a href="${pageContext.request.contextPath}/HomeServlet" class="nav-link ${pageContext.request.servletPath == '/HomeServlet' ? 'active' : ''}"><i data-lucide="home"></i> Home</a>
+            <a href="${pageContext.request.contextPath}/view/inputDescription.jsp" class="nav-link ${pageContext.request.servletPath == '/view/inputDescription.jsp' ? 'active' : ''}"><i data-lucide="upload"></i> Skills Analysis</a>
+            <a href="${pageContext.request.contextPath}/JobRecommendationServlet" class="nav-link ${pageContext.request.servletPath == '/JobRecommendationServlet' ? 'active' : ''}"><i data-lucide="search"></i> Job Recommendations</a>
+            <a href="${pageContext.request.contextPath}/SkillChartServlet" class="nav-link ${pageContext.request.servletPath == '/SkillChartServlet' ? 'active' : ''}"><i data-lucide="bar-chart-3"></i> Skills Chart</a>
+            <a href="${pageContext.request.contextPath}/JobApplicationsServlet" class="nav-link ${pageContext.request.servletPath == '/JobApplicationsServlet' ? 'active' : ''}"><i data-lucide="briefcase"></i> My Applications</a>
+            <a href="${pageContext.request.contextPath}/chat2.jsp" class="nav-link ${pageContext.request.servletPath == '/chat2.jsp' ? 'active' : ''}"><i data-lucide="message-square"></i> Career Chatbot</a>
         </nav>
         <div class="navbar-user">
             <div class="user-icon" onclick="toggleUserMenu()">
@@ -62,4 +62,20 @@
             menu.classList.add("hidden");
         }
     });
+
+    // Set active navigation based on current page
+    function setActiveNav() {
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll('.navbar-links a');
+        
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && currentPath.includes(href.split('/').pop())) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // Call on page load
+    document.addEventListener('DOMContentLoaded', setActiveNav);
 </script>
