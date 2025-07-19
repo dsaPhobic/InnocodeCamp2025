@@ -50,6 +50,11 @@
                         <span class="feature-title">Career Chatbot</span>
                         <div class="feature-desc">Get AI-powered career guidance and advice</div>
                     </a>
+                    <a href="${pageContext.request.contextPath}/VirtualInterviewServlet" class="feature-card">
+                        <span class="feature-icon"><i data-lucide="mic"></i></span>
+                        <span class="feature-title">Phỏng vấn Ảo</span>
+                        <div class="feature-desc">Rèn luyện kỹ năng phỏng vấn với AI chuyên nghiệp</div>
+                    </a>
                 </div>
             </div>
 

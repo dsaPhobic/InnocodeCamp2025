@@ -13,17 +13,11 @@ import model.Job;
  * @author hmqua
  */
 public class JobDAO {
-    private Connection getConnection() throws SQLException {
-        // Sửa lại chuỗi kết nối cho phù hợp với cấu hình của bạn
-        String url = "jdbc:mysql://localhost:3306/your_db_name";
-        String user = "root";
-        String pass = "";
-        return DriverManager.getConnection(url, user, pass);
-    }
 
     public void addJob(Job job) throws SQLException {
         String sql = "INSERT INTO Jobs (title, company, location, environment, skill_required, culture_tags, description, recruiter_email, status, posted_at, salary, experience) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, job.getTitle());
             ps.setString(2, job.getCompany());
             ps.setString(3, job.getLocation());
@@ -46,7 +40,8 @@ public class JobDAO {
 
     public void updateJob(Job job) throws SQLException {
         String sql = "UPDATE Jobs SET title=?, company=?, location=?, environment=?, skill_required=?, culture_tags=?, description=?, recruiter_email=?, status=?, posted_at=?, salary=?, experience=? WHERE id=?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, job.getTitle());
             ps.setString(2, job.getCompany());
             ps.setString(3, job.getLocation());
@@ -70,7 +65,8 @@ public class JobDAO {
 
     public void deleteJob(int id) throws SQLException {
         String sql = "DELETE FROM Jobs WHERE id=?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         }
@@ -78,8 +74,10 @@ public class JobDAO {
 
     public List<Job> getAllJobs() throws SQLException {
         List<Job> jobs = new ArrayList<>();
-        String sql = "SELECT * FROM Jobs";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        String sql = "SELECT * FROM Jobs ORDER BY posted_at DESC";
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql); 
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Job job = new Job(
                     rs.getInt("id"),
@@ -104,7 +102,8 @@ public class JobDAO {
 
     public Job getJobById(int id) throws SQLException {
         String sql = "SELECT * FROM Jobs WHERE id=?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
