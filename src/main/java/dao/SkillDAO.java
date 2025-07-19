@@ -47,12 +47,10 @@ public class SkillDAO {
         }
     }
 
-    // Lấy toàn bộ kỹ năng của 1 user
     public List<Skill> getSkillsByUser(int userId) {
         List<Skill> skills = new ArrayList<>();
         String sql = "SELECT skill_name, score FROM Skills WHERE user_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -70,8 +68,7 @@ public class SkillDAO {
     public List<Skill> getTopSkillsByUser(int userId, int limit) {
         List<Skill> topSkills = new ArrayList<>();
         String sql = "SELECT TOP (?) skill_name, score FROM Skills WHERE user_id = ? ORDER BY score DESC";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, limit);
             ps.setInt(2, userId);
             ResultSet rs = ps.executeQuery();
@@ -88,12 +85,19 @@ public class SkillDAO {
 
     public void deleteSkillsByUser(int userId) {
         String sql = "DELETE FROM Skills WHERE user_id = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, userId);
             ps.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        SkillDAO dao = new SkillDAO();
+        List<Skill> skills = dao.getSkillsByUser(1); // Test với userId = 1
+        for (Skill skill : skills) {
+            System.out.println("Skill: " + skill.getSkillName() + " - Score: " + skill.getScore());
         }
     }
 }
