@@ -18,6 +18,11 @@ public class LLMService {
     private static final String ENDPOINT = "https://api.openai.com/v1/chat/completions";
 
     private static final OkHttpClient client = LLMClient.getInstance();
+    
+    // Check if ChatGPT API is available
+    public static boolean isChatGPTAvailable() {
+        return API_KEY != null && !API_KEY.trim().isEmpty();
+    }
 
     public static List<Skill> callGptWithPrompt(String prompt) throws Exception {
         String content = callChatGPT(prompt); // gọi GPT

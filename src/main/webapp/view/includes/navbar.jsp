@@ -34,7 +34,9 @@
             </div>
             <div id="userMenu" class="user-menu hidden">
                 <div class="user-info">
-                    <img src="${pageContext.request.contextPath}/assets/avatar.png" class="avatar">
+                    <div class="avatar-placeholder">
+                        <i data-lucide="user"></i>
+                    </div>
                     <div>
                         <div class="user-name">${sessionScope.user.fullname}</div>
                         <div class="user-email">${sessionScope.user.email}</div>
