@@ -8,6 +8,8 @@
     <title>User Settings</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/page-animations.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" />
     <style>
         body {
             background: #f3f4f6;
@@ -16,11 +18,40 @@
         }
         .settings-container {
             max-width: 540px;
-            margin: 60px auto 0 auto;
+            margin: 20px auto 0 auto;
             background: #fff;
             border-radius: 1rem;
             box-shadow: 0 2px 8px 0 rgba(16, 30, 54, 0.08), 0 1.5px 4px 0 rgba(16, 30, 54, 0.04);
             padding: 36px 32px 28px 32px;
+            transition: all 0.3s ease;
+        }
+
+        /* Loading screen */
+        .page-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         h2 {
             color: #2563eb;
@@ -215,27 +246,35 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="page-loading" id="loadingScreen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Include Navbar -->
+    <jsp:include page="includes/navbar.jsp" />
+
     <div class="settings-container">
-        <h2>User Settings</h2>
-        <form action="SettingsServlet" method="post" id="settingsForm" onsubmit="return submitSettingsForm(event)">
-            <div class="mb-3 d-flex align-items-center">
+        <h2 class="settings-title">User Settings</h2>
+        <form action="SettingsServlet" method="post" id="settingsForm" class="settings-form" onsubmit="return submitSettingsForm(event)">
+            <div class="mb-3 d-flex align-items-center form-group">
                 <label class="form-label flex-grow-1">Full Name</label>
                 <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'fullName')" title="Edit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
                 </button>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 form-group">
                 <div class="field-display" id="fullName-display" style="pointer-events: none; opacity: 0.6;">
                     <input type="text" id="fullName" name="fullName" class="form-control" value="${user.fullname}" readonly required>
                 </div>
             </div>
-            <div class="mb-3 d-flex align-items-center">
+            <div class="mb-3 d-flex align-items-center form-group">
                 <label class="form-label flex-grow-1">Description</label>
                 <button type="button" class="btn btn-link p-0 ms-2 edit-icon-btn" onclick="enableEdit(this, 'description')" title="Edit">
                     <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="none" viewBox="0 0 24 24"><path stroke="#7c3aed" stroke-width="2" d="M16.475 5.408a2.2 2.2 0 0 1 3.112 3.112l-9.1 9.1a2 2 0 0 1-.707.44l-3.2 1.067a.5.5 0 0 1-.633-.633l1.067-3.2a2 2 0 0 1 .44-.707l9.1-9.1Z"/><path stroke="#7c3aed" stroke-width="2" stroke-linecap="round" d="M15.5 7.5l1 1"/></svg>
                 </button>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 form-group">
                 <div class="field-display" id="description-display" style="pointer-events: none; opacity: 0.6;">
                     <textarea id="description" name="description" class="form-control" rows="2" readonly>${user.description}</textarea>
                 </div>
@@ -342,6 +381,8 @@
             </div>
         </form>
         <div id="update-message"></div>
+
+        <script src="${pageContext.request.contextPath}/js/page-transitions.js"></script>
         <script>
             function enableEdit(btn, fieldId) {
                 var input = document.getElementById(fieldId);

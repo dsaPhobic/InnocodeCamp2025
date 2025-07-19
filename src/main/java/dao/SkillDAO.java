@@ -4,6 +4,7 @@ import model.Skill;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SkillDAO {
 
@@ -67,6 +68,11 @@ public class SkillDAO {
     // ✅ Hàm mới: Lấy n kỹ năng điểm cao nhất
     public List<Skill> getTopSkillsByUser(int userId, int limit) {
         List<Skill> topSkills = new ArrayList<>();
+        String sql = "SELECT skill_name, score FROM Skills WHERE user_id = ? ORDER BY score DESC LIMIT ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.setInt(2, limit);
         String sql = "SELECT TOP (?) skill_name, score FROM Skills WHERE user_id = ? ORDER BY score DESC";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, limit);
@@ -92,6 +98,25 @@ public class SkillDAO {
             e.printStackTrace();
         }
     }
+    
+    // ✅ Hàm mới: Lấy trung bình điểm skill của thị trường
+    public Map<String, Double> getMarketSkillAverages() {
+        Map<String, Double> averages = new java.util.HashMap<>();
+        String sql = "SELECT skill_name, AVG(score) as avg_score FROM Skills GROUP BY skill_name";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String skillName = rs.getString("skill_name").toLowerCase();
+                double avgScore = rs.getDouble("avg_score");
+                averages.put(skillName, avgScore);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return averages;
+    }
+}
 
     public static void main(String[] args) {
         SkillDAO dao = new SkillDAO();
