@@ -63,7 +63,7 @@ public class RecommendationDAO {
 
                 for (String req : requiredSkills) {
                     req = req.trim();
-                    totalRequiredScore += 10; // mỗi kỹ năng cần 10 điểm
+                    totalRequiredScore += 100; // mỗi kỹ năng cần 100 điểm
 
                     if (userSkillMap.containsKey(req)) {
                         matchedScore += userSkillMap.get(req); // điểm người dùng có

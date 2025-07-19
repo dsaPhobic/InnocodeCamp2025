@@ -9,6 +9,7 @@ import java.util.List;
 import model.JobRecommendation;
 import model.User;
 import service.MarkdownUtils;
+import service.LocationService;
 
 
 @WebServlet(name = "JobRecommendationServlet", urlPatterns = {"/JobRecommendationServlet"})
@@ -28,6 +29,21 @@ public class JobRecommendationServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
+        // Xử lý AJAX kiểm tra địa chỉ
+        String action = request.getParameter("action");
+        if ("checkAddress".equals(action)) {
+            String address = request.getParameter("address");
+            boolean found = false;
+            if (address != null && !address.trim().isEmpty()) {
+                LocationService locationService = new LocationService();
+                found = locationService.isAddressFound(address.trim());
+            }
+            response.setContentType("text/plain; charset=UTF-8");
+            response.getWriter().write(Boolean.toString(found));
+            response.getWriter().flush();
+            return;
+        }
+
         // Kiểm tra session đăng nhập
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
@@ -42,13 +58,36 @@ public class JobRecommendationServlet extends HttpServlet {
         // Gọi DAO để lấy danh sách job được gợi ý
         List<JobRecommendation> recommendations = recommendationDAO.generateRecommendationsForUser(userId);
 
+        // Lọc theo title nếu có tham số search
+        String searchTitle = request.getParameter("title");
+        if (searchTitle != null && !searchTitle.trim().isEmpty()) {
+            String keyword = searchTitle.trim().toLowerCase();
+            recommendations.removeIf(rec -> rec.getJob() == null || rec.getJob().getTitle() == null || !rec.getJob().getTitle().toLowerCase().contains(keyword));
+        }
+
+        // Lọc theo location + radius nếu có
+        String searchLocation = request.getParameter("location");
+        String radiusStr = request.getParameter("radiusKm");
+        if (searchLocation != null && !searchLocation.trim().isEmpty() && radiusStr != null && !radiusStr.trim().isEmpty()) {
+            LocationService locationService = new LocationService();
+            String userGPS = locationService.getCoordinatesFromAddress(searchLocation.trim());
+            final double radiusKm = 
+                (radiusStr != null && !radiusStr.trim().isEmpty()) ? 
+                Double.parseDouble(radiusStr) : 0;
+            if (userGPS != null && userGPS.contains(",") && radiusKm > 0) {
+                recommendations.removeIf(rec -> {
+                    if (rec.getJob() == null || rec.getJob().getLocation() == null) return true;
+                    String jobGPS = locationService.getCoordinatesFromAddress(rec.getJob().getLocation());
+                    return !(jobGPS != null && jobGPS.contains(",") && LocationService.isWithinRadius(userGPS, jobGPS, radiusKm));
+                });
+            }
+        }
+
 // ✅ Convert mô tả Markdown sang HTML cho từng job
         for (JobRecommendation rec : recommendations) {
             if (rec.getJob() != null && rec.getJob().getDescription() != null) {
                 String markdown = rec.getJob().getDescription();
-                System.out.println("[LOG] JobID: " + rec.getJob().getId() + " - Markdown: " + markdown);
                 String html = MarkdownUtils.toHtml(markdown);
-                System.out.println("[LOG] JobID: " + rec.getJob().getId() + " - HTML: " + html);
                 rec.getJob().setDescription(html); // Gán lại nội dung đã render
             }
         }
@@ -56,6 +95,12 @@ public class JobRecommendationServlet extends HttpServlet {
 
         // Gửi danh sách sang JSP
         request.setAttribute("recommendations", recommendations);
+
+        // Lấy jobId nếu có để truyền sang JSP
+        String jobId = request.getParameter("jobId");
+        if (jobId != null) {
+            request.setAttribute("jobId", jobId);
+        }
 
         // Chuyển đến trang hiển thị gợi ý
         request.getRequestDispatcher("view/jobSuggestions.jsp").forward(request, response);
