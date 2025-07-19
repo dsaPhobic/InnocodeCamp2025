@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" />
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/home.css" />
         <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     </head>
     <body>
         <jsp:include page="/view/includes/navbar.jsp" />
@@ -52,8 +53,8 @@
                     </a>
                     <a href="${pageContext.request.contextPath}/VirtualInterviewServlet" class="feature-card">
                         <span class="feature-icon"><i data-lucide="mic"></i></span>
-                        <span class="feature-title">Phỏng vấn Ảo</span>
-                        <div class="feature-desc">Rèn luyện kỹ năng phỏng vấn với AI chuyên nghiệp</div>
+                        <span class="feature-title">Virtual Interview</span>
+                        <div class="feature-desc">Practice your interview skills with a professional AI</div>
                     </a>
                 </div>
             </div>
@@ -146,7 +147,6 @@
                 }
             });
         </script>
-        </div>
 
         <!-- Beautiful Footer -->
         <footer class="footer">
@@ -221,7 +221,7 @@
             </div>
         </footer>
 
-        <style>
+                    <style>
             .footer {
                 position: relative;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

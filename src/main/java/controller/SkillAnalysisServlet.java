@@ -19,7 +19,6 @@ import java.util.*;
 @MultipartConfig
 public class SkillAnalysisServlet extends HttpServlet {
 
-    // ✅ Hiển thị inputDescription.jsp + các kỹ năng cũ
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

@@ -22,7 +22,7 @@
         </div>
         <nav class="navbar-links">
             <a href="${pageContext.request.contextPath}/HomeServlet" class="nav-link ${pageContext.request.servletPath == '/HomeServlet' ? 'active' : ''}"><i data-lucide="home"></i> Home</a>
-            <a href="${pageContext.request.contextPath}/view/inputDescription.jsp" class="nav-link ${pageContext.request.servletPath == '/view/inputDescription.jsp' ? 'active' : ''}"><i data-lucide="upload"></i> Skills Analysis</a>
+            <a href="${pageContext.request.contextPath}/SkillAnalysisServlet" class="nav-link ${pageContext.request.servletPath == '/view/inputDescription.jsp' ? 'active' : ''}"><i data-lucide="upload"></i> Skills Analysis</a>
             <a href="${pageContext.request.contextPath}/JobRecommendationServlet" class="nav-link ${pageContext.request.servletPath == '/JobRecommendationServlet' ? 'active' : ''}"><i data-lucide="search"></i> Job Recommendations</a>
             <a href="${pageContext.request.contextPath}/SkillChartServlet" class="nav-link ${pageContext.request.servletPath == '/SkillChartServlet' ? 'active' : ''}"><i data-lucide="bar-chart-3"></i> Skills Chart</a>
             <a href="${pageContext.request.contextPath}/JobApplicationsServlet" class="nav-link ${pageContext.request.servletPath == '/JobApplicationsServlet' ? 'active' : ''}"><i data-lucide="briefcase"></i> My Applications</a>

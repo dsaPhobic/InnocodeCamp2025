@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.util.*;
 import service.LLMService;
 
-@WebServlet("/chat")
+@WebServlet("/ChatbotServlet")
 @MultipartConfig(
         maxFileSize = 10 * 1024 * 1024,
         maxRequestSize = 12 * 1024 * 1024

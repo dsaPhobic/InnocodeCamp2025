@@ -32,29 +32,13 @@ public class UserDAO {
             return false;
         }
     }
+
     // Authenticate user by email and password
     public User getUserByEmailAndPassword(String email, String password) {
         String sql = "SELECT * FROM Users WHERE email = ? AND password = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
             ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return extractUser(rs);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    // Check if user exists by email
-    public User getUserByEmail(String email) {
-        String sql = "SELECT * FROM Users WHERE email = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return extractUser(rs);
@@ -68,8 +52,7 @@ public class UserDAO {
     // Register new user (with all fields)
     public boolean registerUser(User user) {
         String sql = "INSERT INTO Users (fullname, email, password, description, role, gender) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getFullname());
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getPassword());
@@ -93,8 +76,7 @@ public class UserDAO {
     // Overloaded registerUser for registration with extra fields (if needed)
     public boolean registerUser(String fullName, String email, String password, String gender, java.sql.Date dateOfBirth) {
         String sql = "INSERT INTO Users (fullname, email, password, gender, date_of_birth) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, fullName);
             stmt.setString(2, email);
             stmt.setString(3, password); // TODO: hash password in production
@@ -132,17 +114,16 @@ public class UserDAO {
         user.setDateOfBirth(rs.getDate("date_of_birth"));
         return user;
     }
-    
+
     // Method to find user by email (for forgot password)
     public User findByEmail(String email) {
         return getUserByEmail(email);
     }
-    
+
     // Method to save reset token for password reset
     public boolean saveResetToken(String email, String token) {
         String sql = "UPDATE Users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, token);
             // Set expiry to 1 hour from now
             java.sql.Timestamp expiry = new java.sql.Timestamp(System.currentTimeMillis() + (60 * 60 * 1000));
@@ -155,12 +136,11 @@ public class UserDAO {
         }
         return false;
     }
-    
+
     // Method to update password by token
     public boolean updatePasswordByToken(String token, String newPassword) {
         String sql = "UPDATE Users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE reset_token = ? AND reset_token_expiry > GETDATE()";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, newPassword);
             ps.setString(2, token);
             int affectedRows = ps.executeUpdate();
@@ -170,12 +150,11 @@ public class UserDAO {
         }
         return false;
     }
-    
+
     // Method to check if token is valid and not expired
     public boolean isTokenValid(String token) {
         String sql = "SELECT COUNT(*) FROM Users WHERE reset_token = ? AND reset_token_expiry > GETDATE()";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, token);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -185,5 +164,63 @@ public class UserDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static User insertGoogleUser(String email, String fullName, String avatarUrl) {
+        String sql = "INSERT INTO Users (email, fullname, password, role) "
+                + "VALUES (?, ?, ?, 'user')";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, email);
+            stmt.setString(2, fullName);
+            stmt.setString(3, "GOOGLE_LOGIN"); // đặt giá trị mặc định không dùng
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()) {
+                    int userId = rs.getInt(1);
+                    return getUserById(userId);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static User getUserById(int id) {
+        String sql = "SELECT * FROM Users WHERE id = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new UserDAO().extractUser(rs);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static User getUserByEmail(String email) {
+        String sql = "SELECT * FROM Users WHERE email = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setFullname(rs.getString("fullname"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setGender(rs.getString("gender"));
+                user.setDateOfBirth(rs.getDate("date_of_birth"));
+                user.setRole(rs.getString("role"));
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
