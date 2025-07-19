@@ -11,6 +11,8 @@
 <html>
 <head>
     <title>User Portfolio</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/page-animations.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" />
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -21,11 +23,39 @@
 
         .container {
             max-width: 720px;
-            margin: 60px auto;
+            margin: 20px auto;
             padding: 24px;
             background-color: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Loading screen */
+        .page-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         h2 {
@@ -42,6 +72,7 @@
             border-radius: 12px;
             padding: 28px 32px 32px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
         }
 
         .edit-icon-btn {
@@ -69,6 +100,7 @@
 
         .field {
             margin-bottom: 18px;
+            transition: all 0.3s ease;
         }
 
         .field label {
@@ -96,12 +128,21 @@
             margin: 2px 4px 2px 0;
             border-radius: 16px;
             font-size: 1rem;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2>User Portfolio</h2>
+<!-- Loading Screen -->
+<div class="page-loading" id="loadingScreen">
+    <div class="loading-spinner"></div>
+</div>
+
+<!-- Include Navbar -->
+<jsp:include page="includes/navbar.jsp" />
+
+<div class="container portfolio-container">
+    <h2 class="portfolio-title">User Portfolio</h2>
     <div class="portfolio-card">
         <!-- Nút edit để chuyển hướng -->
         <a href="${pageContext.request.contextPath}/SettingsServlet" class="edit-icon-btn" title="Edit profile">
@@ -112,37 +153,37 @@
         </a>
 
         <!-- Nội dung hồ sơ -->
-        <div class="field">
+        <div class="field portfolio-field">
             <label>Full Name:</label>
             <div class="value">${user.fullname}</div>
         </div>
-        <div class="field">
+        <div class="field portfolio-field">
             <label>Description:</label>
             <div class="value">${user.description}</div>
         </div>
-        <div class="field">
+        <div class="field portfolio-field">
             <label>Gender:</label>
             <div class="value">${user.gender}</div>
         </div>
-        <div class="field">
+        <div class="field portfolio-field">
             <label>Location:</label>
             <div class="value">${user.location}</div>
         </div>
-        <div class="field">
+        <div class="field portfolio-field">
             <label>Date of Birth:</label>
             <div class="value">${user.dateOfBirth}</div>
         </div>
-        <div class="field">
+        <div class="field portfolio-field">
             <label>Email:</label>
             <div class="value">${user.email}</div>
         </div>
-        <div class="field">
+        <div class="field portfolio-field">
             <label>Role:</label>
             <div class="value">${user.role}</div>
         </div>
 
         <!-- Phần Skills -->
-        <div class="field">
+        <div class="field portfolio-field">
             <label>Skills:</label>
             <div class="skills-list">
                 <c:choose>
@@ -159,5 +200,7 @@
         </div>
     </div>
 </div>
+
+<script src="${pageContext.request.contextPath}/js/page-transitions.js"></script>
 </body>
 </html>
