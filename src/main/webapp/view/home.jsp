@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -39,7 +40,7 @@
                         <span class="feature-title">Skills Chart</span>
                         <div class="feature-desc">Visualize your skills with interactive radar charts</div>
                     </a>   
-                    <a href="${pageContext.request.contextPath}/jobApplications.jsp" class="feature-card">
+                    <a href="${pageContext.request.contextPath}/JobApplicationsServlet" class="feature-card">
                         <span class="feature-icon"><i data-lucide="briefcase"></i></span>
                         <span class="feature-title">My Applications</span>
                         <div class="feature-desc">Track your job applications and their status</div>
@@ -58,15 +59,34 @@
                     <div class="card-title"><i data-lucide="trending-up" class="text-blue-600"></i>Recent Jobs</div>
                     <c:choose>
                         <c:when test="${not empty recentJobs}">
-                            <c:forEach var="job" items="${recentJobs}">
-                                <div class="recent-job">
-                                    <div class="job-title">${job.title}</div>
-                                    <div class="job-company">${job.company}</div>
-                                    <div class="job-meta">
-                                        <i data-lucide="map-pin" style="width:14px;"></i> ${job.location}
-                                        <i data-lucide="clock" style="width:14px;"></i> ${job.created_at}
+                            <c:forEach var="job" items="${recentJobs}" varStatus="i">
+                                <c:if test="${i.index < 3}">
+                                    <div class="recent-job">
+                                        <div class="job-title">
+                                            <a href="${pageContext.request.contextPath}/JobRecommendationServlet?jobId=${job.id}" style="color:inherit;text-decoration:none;cursor:pointer;">
+                                                ${job.title}
+                                            </a>
+                                        </div>
+                                        <div class="job-company">${job.company}</div>
+                                        <div class="job-meta">
+                                            <i data-lucide="map-pin" style="width:14px;"></i>
+                                            <c:set var="parts" value="${fn:split(job.location, ',')}" />
+                                            <c:set var="city" value="${parts[fn:length(parts)-1]}" />
+                                            <c:set var="city" value="${fn:replace(city, 'TP.', '')}" />
+                                            <c:set var="city" value="${fn:replace(city, 'Thành phố', '')}" />
+                                            <span>${fn:trim(city)}</span>
+                                            <i data-lucide="clock" style="width:14px;"></i>
+                                            <c:choose>
+                                                <c:when test="${not empty job.postedAt}">
+                                                    ${job.postedAt}
+                                                </c:when>
+                                                <c:otherwise>
+                                                    N/A
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
                                     </div>
-                                </div>
+                                </c:if>
                             </c:forEach>
                         </c:when>
                         <c:otherwise>

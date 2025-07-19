@@ -2,8 +2,10 @@ package controller;
 
 import dao.JobDAO;
 import dao.SkillDAO;
+import dao.RecommendationDAO;
 import model.Skill;
 import model.User;
+import model.JobRecommendation;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -43,6 +45,17 @@ public class HomeServlet extends HttpServlet {
                 System.out.println("   - " + skill.getSkillName() + ": " + skill.getScore());
             }
         }
+
+        // Lấy 3 job phù hợp nhất
+        RecommendationDAO recDAO = new RecommendationDAO();
+        java.util.List<JobRecommendation> recs = recDAO.generateRecommendationsForUser(user.getId());
+        java.util.List<model.Job> top3Jobs = new java.util.ArrayList<>();
+        for (int i = 0; i < recs.size() && i < 3; i++) {
+            if (recs.get(i).getJob() != null) {
+                top3Jobs.add(recs.get(i).getJob());
+            }
+        }
+        request.setAttribute("recentJobs", top3Jobs);
 
         request.setAttribute("userSkills", topSkills);
         System.out.println("[HomeServlet] ✅ Forward đến view/home.jsp");

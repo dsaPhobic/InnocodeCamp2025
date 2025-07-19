@@ -101,4 +101,25 @@ public class JobApplicationDAO {
 
         return applications;
     }
+
+    // Xóa một đơn ứng tuyển khỏi DB
+    public boolean deleteApplication(int userId, int jobId) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            conn = DBConnection.getConnection();
+            String sql = "DELETE FROM JobApplications WHERE user_id = ? AND job_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ps.setInt(2, jobId);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { if (ps != null) ps.close(); } catch (SQLException ignored) {}
+            DBConnection.closeConnection(conn);
+        }
+    }
 }

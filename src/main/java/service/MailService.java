@@ -4,6 +4,13 @@ import com.sun.mail.util.MailSSLSocketFactory;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimeUtility;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import jakarta.activation.FileDataSource;
+import java.io.File;
 
 import javax.net.ssl.*;
 import java.security.SecureRandom;
@@ -65,6 +72,48 @@ public class MailService {
         message.setText(content);
 
         // Gửi email
+        Transport.send(message);
+    }
+
+    public static void sendEmailWithAttachment(String toEmail, String subject, String content, File attachment) throws MessagingException {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
+            }
+        });
+
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(FROM_EMAIL));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+        message.setSubject(subject);
+
+        // Body text
+        MimeBodyPart textPart = new MimeBodyPart();
+        textPart.setText(content, "utf-8");
+
+        // Attachment
+        MimeBodyPart attachPart = new MimeBodyPart();
+        DataSource source = new FileDataSource(attachment);
+        attachPart.setDataHandler(new DataHandler(source));
+        try {
+            attachPart.setFileName(MimeUtility.encodeText(attachment.getName(), "utf-8", null));
+        } catch (java.io.UnsupportedEncodingException e) {
+            attachPart.setFileName(attachment.getName());
+        }
+
+        // Multipart
+        MimeMultipart multipart = new MimeMultipart();
+        multipart.addBodyPart(textPart);
+        multipart.addBodyPart(attachPart);
+
+        message.setContent(multipart);
+
         Transport.send(message);
     }
 
